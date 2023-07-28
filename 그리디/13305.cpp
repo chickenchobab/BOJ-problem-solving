@@ -1,37 +1,30 @@
 #include <iostream>
-#include <algorithm>
 using namespace std;
 
 int main()
 {
-    int n,cur=0,sum=0,total=0;
+    long long n, curd=0, totald=0, sum=0;
     cin>>n;
 
-    int *price = new int[n];
-    int *need = new int[n];
-    int *cnt = new int[n];
+    long long *price = new long long[n];
+    long long *dist = new long long[n];
     
-    need[0]=0;
-    for(int i=1;i<n;i++){
-        cin>>need[i];
-        sum+=need[i];
+    for(int i=0;i<n-1;i++){
+        cin>>dist[i];
+        totald+=dist[i];
     }
-
     for(int i=0;i<n;i++){
         cin>>price[i];
     }
-    
-    for(int i=0;i<n;i++){
-        cnt[i]=0;
-    }
 
-    for(int i=1;i<n && cur<sum;i++)
+    int idx=0;
+    while(curd<totald)
     {
-        if(need[i]>cur)
+        int i;
+        for(i=idx; i<n-1 && price[idx]<=price[i]; curd+=dist[i], sum+=dist[i]*price[idx], i++);
+        idx=i;
     }
 
-
-    
-
+    cout<<sum<<endl;
     return 0;
 }
