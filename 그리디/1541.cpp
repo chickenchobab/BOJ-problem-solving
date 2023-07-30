@@ -1,30 +1,18 @@
 #include <iostream>
-#include <deque> 
 using namespace std;
 
 int main()
 {
-    //멍청한 코드
-    deque<int> v;
-    int num, tmp=0,result=0;
+    int num, minus=0,result=0;
     char op;
     while(1){
         cin>>num;
-        v.push_back(num+tmp);
+        if(!minus) result+=num;
+        else result+=-num;
         op=cin.get();
         if(op=='\n') break;
-        if(op=='+') {
-            tmp=v.back();
-            v.pop_back();
-        }
-        else tmp=0;
+        if(op=='-') minus=1;
     }
-
-    result = v[0];
-    for(int i=1; i<v.size(); i++){
-        result+=-(v[i]);
-    }
-
     cout<<result<<endl;
 }
 
