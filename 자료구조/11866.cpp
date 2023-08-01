@@ -1,19 +1,26 @@
 #include <iostream>
+#include <queue>
 
 using namespace std;
 
 int main(){
+    queue<int> q;
     int n,k; cin>>n>>k;
-    int idx=k-1;
-    int* arr=new int[n];
-    for(int i=0; i<n;i++){
-        arr[i]=i+1;
+
+    for(int i=1;i<=n; i++) 
+        q.push(i);
+    
+    cout<<'<';
+    while(!q.empty()){
+        for(int i=1;i<=k;i++){
+            int front = q.front();
+            q.pop();
+            if(i==k) cout<<front; 
+            else q.push(front);
+        }
+        if(!q.empty()) cout<<", ";
     }
-    cout<<"<";
-    for(int i=0;i<n;i++,idx=(idx+k)%n){
-        cout<<arr[idx];
-        if(i!=n-1) cout<<", ";
-    }
-    cout<<">";
-    delete arr;
+    cout<<'>';
+    return 0;
+
 }
