@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <queue>
+#include <tuple>
 
 
 using namespace std;
@@ -17,8 +18,7 @@ void bfs(int i, int j){
     map[i][j]=1;
     
     while(!q.empty()){
-        i=q.front().first;
-        j=q.front().second; 
+        tie(i,j)=q.front();
         q.pop();
 
         for(int k=0;k<4;k++){
