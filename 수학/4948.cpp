@@ -2,30 +2,33 @@
 
 using namespace std;
 
-int is_prime(const int& n){
-    for(int i=2;i<n;i++){
-        if(!(n%i)) return 0;
-    }
-    return 1;
-}
+bool arr[123456*2+1];
 
 int main(){
 
     ios::sync_with_stdio(false);
-cin.tie(NULL);
-cout.tie(NULL);
+    cin.tie(NULL);
+    cout.tie(NULL);
 
-    int n;
+    int n,cnt;
     while(1){
         cin>>n;
+        cnt=0;
         if(!n) break;
 
-        int cnt=0;
-        for(int i=n+1;i<=2*n;i++){
-            cnt+=is_prime(i);
+        for(int i=2;i<=2*n;i++){
+            if(arr[i]) continue;
+            for(int j=2*i; j<=2*n; j+=i){
+                arr[j]=true;
+            }
+        }
+
+        for(int i=n+1; i<=2*n; i++){
+            if(!arr[i]) cnt++;
         }
         cout<<cnt<<'\n';
     }
+    
 
 
     return 0;
