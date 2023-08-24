@@ -11,7 +11,7 @@ int main(){
     ll n,k; 
     cin>>n>>k;
 
-    ll l=1,r=n*n,mid,cnt,num;
+    ll l=1,r=k,mid,cnt,num;
     while(l<=r){
         mid = (l+r)/2;
         cnt=0;
@@ -20,7 +20,7 @@ int main(){
         }
         //cout<<"l:"<<l<<" r:"<<r<<' '<<cnt<<endl;
         if(cnt<k) {l=mid+1;}
-        else  {r=mid-1;num=mid;}
+        else {r=mid-1;num=mid;}
     }
     cout<<num; 
 
