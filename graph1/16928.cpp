@@ -5,7 +5,7 @@
 using namespace std;
 
 int n,m,cnt=0;
-int visited[101]={0,}, teleport[101]={0,};
+int visited[101], teleport[101];
 vector<vector<int>> v(101);
 
 void bfs(){
