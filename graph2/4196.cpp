@@ -5,12 +5,15 @@
 
 using namespace std;
 
-int t,n,m,x,y,idx,cnt,si;
+int t,n,m,x,y,idx,cnt;
 
 vector<int> graph[100001];
 
 int into[100001], pushed[100001], popped[100001];
 stack<int> s;
+
+//사이클 때문에 생기는 진입차수를 제거
+//사이클을 하나의 노드처럼 연산
 
 int dfs(int u){
     pushed[u]=++idx;
@@ -30,11 +33,10 @@ int dfs(int u){
 
     if(pushed[u]==parent){
         int d=1;
-        ++si;
         while(1){
             int tmp=s.top();
             s.pop();
-            popped[tmp]=si;
+            popped[tmp]=1;
             if(into[tmp]) d=0;
             if(tmp==u) break;
         }
@@ -49,7 +51,7 @@ int main(){
     cin>>t;
     while(t--){
         cin>>n>>m;
-        si=idx=cnt=0;
+        idx=cnt=0;
         for(int i=1;i<=n;i++){
             graph[i].clear();
             into[i]=pushed[i]=popped[i]=0;
