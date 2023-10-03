@@ -3,34 +3,31 @@
 
 using namespace std;
 
-int t,n;
-
+int t,n,sum[501],dp[501][501];
 
 int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(0); cout.tie(0);
     cin>>t;
     while(t--){
         cin>>n;
-        int file[501], sum[501];
-        int dp[501][501];
-        
-        fill(&dp[0][0],&dp[500][500],1000000000);
+
+        int cost;
         for(int i=1;i<=n;i++){
-            cin>>file[i];
-            sum[i]=sum[i-1]+=file[i];
+            cin>>cost;
+            sum[i]=sum[i-1]+cost;
         }
 
-        for(int i=1;i<=n;i++){
-            for(int j=1;i+j-1<=n;j++){
-                if(i+j-1==1)
-                    dp[i][i+j-1]=0;
-                else{
-                    for(int k=j; k<i+j-1; k++){
-                        dp[j][j+i-1]=min(dp[j][j+i-1], )
-                    }
+        for(int s=1; s<=n; s++){
+            for(int a=1; a<=n-s; a++){
+                int b=a+s;
+                dp[a][b]=100000000;
+                for(int mid=a; mid<b; mid++){
+                    dp[a][b]=min(dp[a][b], dp[a][mid]+dp[mid+1][b]+(sum[b]-sum[a-1]));
                 }
             }
         }
 
-        cout<<dp[1][c];
+        cout<<dp[1][n]<<'\n';
     }
 }

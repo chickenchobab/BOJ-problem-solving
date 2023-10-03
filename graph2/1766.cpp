@@ -1,19 +1,21 @@
 #include <iostream>
-#include <vector>
+#include <algorithm>
 #include <queue>
+#include <vector>
 
 using namespace std;
 
+//typedef priority_queue<int, vector<int>, greater<int>> heap;
 int n,m,a,b;
-
 vector<int> graph[33333];
+priority_queue<int, vector<int>, greater<int>> pq;
 int ind[33333];
-queue<int> q;
 
 int main(){
-    
+
     ios::sync_with_stdio(false);
     cin.tie(0); cout.tie(0);
+
     cin>>n>>m;
     while(m--){
         cin>>a>>b;
@@ -21,20 +23,16 @@ int main(){
         ind[b]++;
     }
 
-    //topological
     for(int i=1;i<=n;i++){
-        if(!ind[i]) q.push(i);
+        if(ind[i]==0) pq.push(i);    
+        sort(graph[i].begin(), graph[i].end());
     }
-    while(!q.empty()){
-        int u=q.front();
-        q.pop();
+    while(!pq.empty()){
+        int u=pq.top();
+        pq.pop();
         cout<<u<<' ';
         for(int v:graph[u]){
-            if(--ind[v]==0) {
-                q.push(v);
-            }
+            if(--ind[v]==0) pq.push(v);
         }
     }
-
-    return 0;
 }
