@@ -1,37 +1,38 @@
 #include <iostream>
-#include <vector>
-#include <utility>
 #include <algorithm>
 
 using namespace std;
 
-bool cmp(const pair<int,int>& a, const pair<int,int>& b)
-{
-    if(a.second==b.second) 
-        return a.first<b.first;
-    return a.second<b.second;
+int n,a,b;
+typedef pair<int, int> p;
+p arr[100001];
+
+bool cmp(p x, p y){
+    if(x.second==y.second)
+        return x.first<y.first;
+    return x.second<y.second;
 }
 
-int main()
-{
-    cin.tie(nullptr);   
-    ios_base::sync_with_stdio(false);
-
-    vector<pair<int,int>> v;
-    int n,a,b,cnt=1; 
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(0); cout.tie(0);
     cin>>n;
-    for(int i=0;i<n;i++){
+    
+    for(int i=1;i<=n;i++){
         cin>>a>>b;
-        v.push_back(make_pair(a,b));
+        arr[i].first=a;
+        arr[i].second=b;
     }
-    sort(v.begin(),v.end(),cmp);
 
-    for(int i=1,end=v[0].second; i<n; i++){
-        if(end>v[i].first) continue;
-        end=v[i].second;
-        cnt++;
+    sort(arr+1, arr+n+1, cmp);
+
+    int cur=0, cnt=0;
+    for(int i=1; i<=n; i++){
+        if(arr[i].first>=cur) {
+            cnt++; 
+            cur=arr[i].second;
+        }
     }
     
-    cout<<cnt<<endl;
-    
+    cout<<cnt;
 }

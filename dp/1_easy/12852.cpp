@@ -7,7 +7,9 @@ int n, dp[1000001], bt[1000001];
 
 void print(int num){
     cout<<num<<' ';
+
     if(num==1) return;
+    
     if(bt[num]==3) print(num-1);
     else if(bt[num]==2) print(num/2);
     else print(num/3);

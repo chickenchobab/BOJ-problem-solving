@@ -1,59 +1,48 @@
 #include <iostream>
-#include <algorithm>
 #include <queue>
-
+#include <vector>
 #define INF 3333333
 
 using namespace std;
 
-int v,e,s,a,b;
-int dis[20001][20001],d[20001],c[20001];
-
-int closest(){
-    int mn=INF;
-    int idx=0;
-    for(int i=1;i<=v;i++){
-        if(c[i]) continue;
-        if(d[i]<mn){
-            mn=d[i];
-            idx=i;
-        }
-    }
-    return idx;
-}
+typedef pair<int, int> edge;
+int n,e,s,a,b,c;
+vector<edge> graph[22222];
+priority_queue<edge, vector<edge>, greater<edge>> pq;
+int d[22222];
 
 int main(){
-    cin>>v>>e>>s;
 
-    fill(&dis[1][1], &dis[v][v], INF);
+    ios::sync_with_stdio(false);
+    cin.tie(0); cout.tie(0);
 
+    cin>>n>>e>>s;
     for(int i=1;i<=e;i++){
-        cin>>a>>b;
-        cin>>dis[a][b];
-    }
-    for(int i=1;i<=v;i++){
-        d[i]=dis[s][i];
+        cin>>a>>b>>c;
+        graph[a].push_back({c,b});
     }
     
-    // for(int i=1;i<=v;i++){
-    //     cout<<d[i]<<' ';
-    // }
-    // cout<<endl;
+    //모든 노드 정보를 pq에 넣음
+    for(int i=1;i<=n;i++){
+        if(i==s) d[i]=0;
+        else d[i]=INF;
+		pq.push({d[i],i});
+    }
 
-    c[s]=1, d[s]=0;
-    while(1){
-        int u=closest();
-        if(u==0) break;
-        c[u]=1;
-        for(int i=1;i<=v;i++){
-            if(c[i]) continue;
-            if(d[i]>d[u]+dis[u][i]){
-                d[i]=d[u]+dis[u][i];
+    //d가 작은 노드부터 처리되므로
+    //d가 무한대라면 이미 갱신된 이후에나 등장함
+    while(!pq.empty()){
+        edge u = pq.top();
+        pq.pop();
+        for(edge v:graph[u.second]){
+            if(d[u.second]+v.first<d[v.second]){
+                d[v.second]=d[u.second]+v.first;
+                pq.push({d[v.second],v.second});
             }
         }
     }
 
-    for(int i=1;i<=v;i++){
+    for(int i=1;i<=n;i++){
         if(d[i]==INF) cout<<"INF";
         else cout<<d[i];
         cout<<'\n';
