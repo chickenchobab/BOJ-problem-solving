@@ -14,7 +14,7 @@ int d[22222];
 int main(){
 
     ios::sync_with_stdio(false);
-    cin.tie(0); cout.tie(0);
+    cin.tie(0);
 
     cin>>n>>e>>s;
     for(int i=1;i<=e;i++){

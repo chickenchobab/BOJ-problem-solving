@@ -6,7 +6,7 @@ using namespace std;
 
 int n,m;
 int visited[100001],d[100001];
-//d 배열은 해당 노드까지 최단거리 경우의 수이다
+//d 배열은 해당 노드까지 최단시간 내 방문하는 경우의 수이다
 queue<int> q;
 
 bool check(int x){
@@ -15,23 +15,20 @@ bool check(int x){
 }
 
 void visit(int u, int v) {
-    
-    if(!visited[v]){
-        q.push(v);
-        visited[v]=visited[u]+1;
-    }
 
-    //처음 방문 시 OR 재방문이지만 최단거리 시
-    //이전 노드의 방법만큼 추가된다
-    if(visited[v]==visited[u]+1){
-        d[v]+=d[u];
+    if(visited[v]>visited[u]+1){
+        visited[v]=visited[u]+1;
+        q.push(v);
     }
+    //최단 시간 내에 방문 시
+    if(visited[v]==visited[u]+1)
+        d[v]+=d[u];
 }
 
 void bfs(int u){
     
     d[u]=1;
-    visited[u]=1;
+    visited[u]=0;
     q.push(u);
 
     while(!q.empty()){
@@ -48,6 +45,7 @@ int main(){
     ios::sync_with_stdio(false);
     cin.tie(0); cout.tie(0);
     cin>>n>>m;
+    for(int i=0;i<=100000;i++) visited[i]=100000;
     bfs(n);
-    cout<<visited[m]-1<<'\n'<<d[m];
+    cout<<visited[m]<<'\n'<<d[m];
 }
