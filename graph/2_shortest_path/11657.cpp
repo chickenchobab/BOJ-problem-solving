@@ -11,30 +11,25 @@ int n, m, a, b, c;
 long long d[555];
 vector<iii> edge;
 
-void bellman_ford(){
+bool bellman_ford(){
 
-    for(int i=1; i<=n; i++){
-        for(iii j : edge){
-            int a = get<0>(j);
-            int b = get<1>(j);
-            int ab = get<2>(j);
+        d[1] = 0;
 
-            if(d[a] == INF) continue;
-            if(d[b] > d[a] + ab) {
-                if(i == n){
-                    cout<<-1;
-                    return;
-                }
-                d[b] = d[a] + ab;
+		for (int i=1; i<=n-1; i++){       
+            for(iii j : edge){           
+                int a, b, ab;
+                tie(a, b, ab) = {get<0>(j), get<1>(j), get<2>(j)};
+                if(d[a] == INF) continue;
+                if(d[b] > d[a] + ab) d[b] = d[a] + ab;
             }
-        }
-    }
-    
-    for(int i=2; i<=n; i++){
-        if(d[i] == INF) cout<<-1<<'\n';
-        else cout<<d[i]<<'\n';
-    }
-
+		}
+		for (iii j : edge){
+            int a, b, ab;
+            tie(a, b, ab) = {get<0>(j), get<1>(j), get<2>(j)};
+            if(d[a] == INF) continue;
+			if(d[b] > d[a] + ab) return false;
+		}
+		return true;
 }
 
 int main(){
@@ -42,18 +37,26 @@ int main(){
     ios::sync_with_stdio(false);
     cin.tie(0);
     
-    cin>>n>>m;
+    cin >> n >> m;
 
-    for(int i=1; i<=n; i++) 
-        d[i]=INF;
-    d[1]=0;
+    for(int i=1; i<=n; i++) d[i]=INF;
 
     for(int i=1; i<=m; i++){
-        cin>>a>>b>>c;
-        edge.push_back({a,b,c});
+        cin >> a >> b >> c;
+        edge.push_back({a, b, c});
     }
     
-    bellman_ford();
+    if(bellman_ford()){
+        for(int i=2; i<=n; i++){
+            if (d[i] != INF) cout << d[i] << '\n';
+            else cout << -1 << '\n';
+        }
+    } 
+    else{
+        cout << -1;
+    }
+
+    
     
     return 0;
 }
