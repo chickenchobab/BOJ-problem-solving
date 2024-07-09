@@ -1,136 +1,105 @@
 #include <iostream>
+#include <algorithm>
 #include <queue>
-#include <cstdio>
+#include <vector>
+#define fastio ios::sync_with_stdio(false);cin.tie(0);cout.tie(0);
 
 using namespace std;
 
-typedef pair<int,int> p;
-int n, l, r;
-int map[51][51], linked[51][51], checked[51][51];
-int di[] = {1, -1, 0, 0}, dj[] = {0, 0, 1, -1};
-int sum, cnt, ans;
-queue<p> q;
+int N, L, R;
+int popul[51][51];
 
-void show(){
-    cout << '\n';
-    for(int i=1; i<=n; i++){
-        for(int j=1; j<=n; j++){
-            cout << map[i][j] << ' ';
+bool visited[51][51];
+int di[] = {1, -1, 0, 0}, dj[] = {0, 0, 1, -1};
+typedef pair<int, int> point;
+queue<point> q;
+vector<point> change;
+bool found;
+
+void input(){
+    fastio
+    cin >> N >> L >> R;
+    for (int i = 1; i <= N; ++ i){
+        for (int j = 1; j <= N; ++ j){
+            cin >> popul[i][j];
         }
-        cout << '\n';
     }
-    cout << '\n';
 }
 
-bool valid(int i, int j, int ni, int nj){
-    
-    int d;
-    if(ni<1 || ni>n || nj<1 || nj>n) return false;
-    if(linked[ni][nj] || checked[ni][nj]) return false;
-    
-    d = abs(map[ni][nj] - map[i][j]);
-    if(d<l || d>r) return false;
-
+bool isvalid(int i, int j, int ni, int nj){
+    if (ni < 1 || ni > N || nj < 1 || nj > N) return false;
+    if (visited[ni][nj]) return false;
+    int gap = abs(popul[ni][nj] - popul[i][j]);
+    if (gap < L || gap > R) return false;
     return true;
 }
 
-void bfs(int i, int j){
+int calc_popul(int i, int j){
+    int sum, cnt;
+    
+    sum = popul[i][j], cnt = 1;
+    q.push({i, j});
+    visited[i][j] = 1;
 
-    checked[i][j] = linked[i][j] = -1;
-    q.push({i,j});
-
-    while(q.size()){
-        p u = q.front();
-        int i = u.first, j = u.second;
+    while (q.size()){
+        int i = q.front().first; 
+        int j = q.front().second;
         q.pop();
-        for(int d=0; d<4; d++){
+
+        for (int d = 0; d < 4; ++ d){
             int ni = i + di[d];
             int nj = j + dj[d];
-            if(!valid(i, j, ni, nj)) continue;
-            
-            linked[ni][nj] = checked[ni][nj] = -1;
-            q.push({ni, nj});
-            sum += map[ni][nj];
-            cnt ++;
+            if (isvalid(i, j, ni, nj)){
+                q.push({ni, nj});
+                change.push_back({ni, nj});
+                visited[ni][nj] = 1;
+                sum += popul[ni][nj];
+                cnt ++;
+            }
+        }
+    }
+
+    if (cnt == 1) return -1;
+    change.push_back({i, j});
+    return sum / cnt;
+}
+
+void mark_popul(int p){
+    for (auto area : change)
+        popul[area.first][area.second] = p;
+    change.clear();
+}
+
+void reset(){
+    for (int i = 1; i <= N; ++ i){
+        for (int j = 1; j <= N; ++ j){
+            visited[i][j] = 0;
         }
     }
 }
 
-void move(int i, int j){
-
-    q.push({i,j});
-    linked[i][j] = 0;
-    checked[i][j] = sum / cnt;
-
-    while(q.size()){
-        p u = q.front();
-        int i = u.first, j = u.second;
-        q.pop();
-        for(int d=0; d<4; d++){
-            int ni = i + di[d];
-            int nj = j + dj[d];
-            if(ni<1 || ni>n || nj<1 || nj>n) continue;
-            if(linked[ni][nj] == 0) continue;
-            q.push({ni, nj});
-            linked[ni][nj] = 0;
-            checked[ni][nj] = sum / cnt;
+void solve(){
+    int ans = 0;
+    while (1){
+        int p;
+        found = 0;
+        for (int i = 1; i <= N; ++ i){
+            for (int j = 1; j <= N; ++ j){
+                if (visited[i][j]) continue;
+                if ((p = calc_popul(i, j)) == -1) continue;
+                mark_popul(p);
+                found = 1;
+            }
         }
+        if (found == 0) break;
+        ans ++;
+        reset();
     }
-}
-
-void update(){
-    for(int i=1; i<=n; i++){
-        for(int j=1; j<=n; j++){
-            if(checked[i][j] == -1) continue;
-            map[i][j] = checked[i][j];
-        }
-    }
+    cout << ans;
 }
 
 int main(){
-
-    ios::sync_with_stdio(false);
-
-    cin >> n >> l >> r;
-
-    for(int i=1; i<=n; i++){
-        for(int j=1; j<=n; j++){
-            cin >> map[i][j];
-            linked[i][j] = 0;
-        }
-    }
-
-    while(1){
-        int moved = 0;
-
-        for(int i=1; i<=n; i++){
-            for(int j=1; j<=n; j++){
-                checked[i][j] = 0;
-            }
-        }
-
-        for(int i=1; i<=n; i++){
-            for(int j=1; j<=n; j++){
-                if(checked[i][j]) continue;
-                cnt = 1;
-                sum = map[i][j];
-                bfs(i,j);
-                if (cnt > 1) {
-                    move(i,j);
-                    moved = 1;
-                }
-                else{
-                    linked[i][j] = 0;
-                }
-            }
-        }
-
-        if(!moved) break;
-        update();
-        ans ++;
-        //show();
-    }
-    
-    cout << ans;
-
+    input();
+    solve();
+    return 0;
 }

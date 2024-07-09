@@ -4,12 +4,18 @@
 
 using namespace std;
 
+int N, K;
+int arr[101];
+
 void input(){
   fastio
+  cin >> N >> K;
 }
 
 void solve(){
-
+  for (int i = 1; i <= K; ++ i){
+    cin >> arr[i];
+  }
 }
 
 int main(){

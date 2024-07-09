@@ -44,6 +44,12 @@
         "map": "cpp",
         "queue": "cpp",
         "cstring": "cpp",
-        "set": "cpp"
-    }
+        "set": "cpp",
+        "valarray": "cpp",
+        "stack": "cpp"
+    },
+    "C_Cpp.errorSquiggles": "disabled",
+    "editor.fontFamily": "JetBrains Mono, malgun gothic",
+    "editor.fontLigatures": false,
+    "cmake.configureOnOpen": false
 }
