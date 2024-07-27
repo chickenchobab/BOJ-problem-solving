@@ -1,29 +1,37 @@
 #include <iostream>
-#include <deque>
+#include <algorithm>
+#include <stack>
+#define fastio ios::sync_with_stdio(false);cin.tie(0);cout.tie(0);
 
 using namespace std;
 
-int n,k;
-char ch;
-deque<char> v;
+int N, K;
+
+void input(){
+  fastio
+  cin >> N >> K;
+}
+
+void solve(){
+  string st = "";
+  char ch;
+
+  while (N--){
+    cin >> ch;
+    while (st.size() && st.back() < ch && K) {
+      st.pop_back();
+      K--;
+    }
+    st.push_back(ch);
+  }
+  while (K--) 
+    st.pop_back();
+
+  cout << st;
+}
 
 int main(){
-
-    ios::sync_with_stdio(false);
-    cin.tie(0); cout.tie(0);
-
-    cin>>n>>k;
-    int cnt=k;
-    for(int i=1;i<=n;i++){
-        cin>>ch;
-        while(cnt && !v.empty() && ch>v.back()){
-            v.pop_back();
-            cnt--;
-        }
-        if(v.size()<n-k)
-            v.push_back(ch);
-    }
-    for(char ch:v){
-        cout<<ch;
-    }
+  input();
+  solve();
+  return 0;
 }

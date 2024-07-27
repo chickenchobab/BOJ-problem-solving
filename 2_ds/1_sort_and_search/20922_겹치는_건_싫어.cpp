@@ -1,11 +1,11 @@
 #include <iostream>
 #include <algorithm>
 #define fastio ios::sync_with_stdio(false);cin.tie(0);cout.tie(0);
-
 using namespace std;
 
 int N, K;
-int arr[101];
+int arr[200002]; 
+int cnt[100001];
 
 void input(){
   fastio
@@ -13,9 +13,17 @@ void input(){
 }
 
 void solve(){
-  for (int i = 1; i <= K; ++ i){
-    cin >> arr[i];
+  int s = 0, e = 0, ans = 1;
+  for (e = 0; e < N; ++ e){
+    cin >> arr[e];
+    cnt[arr[e]] ++;
+    while (cnt[arr[e]] > K){
+      cnt[arr[s]] --;
+      s ++;
+    }
+    ans = max(ans, e - s + 1);
   }
+  cout << ans;
 }
 
 int main(){

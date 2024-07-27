@@ -1,33 +1,45 @@
 #include <iostream>
+#include <algorithm>
 #include <deque>
+#define fastio ios::sync_with_stdio(false);cin.tie(0);cout.tie(0);
 
 using namespace std;
 
+int N, M;
+bool isStack[100000];
+deque<int> dq;
+
+void input(){
+  fastio
+  cin >> N;
+  
+  for (int i = 0; i < N; ++i){
+    cin >> isStack[i];
+  }
+
+  int num;
+  for (int i = 0; i < N; ++i){
+    cin >> num;
+    if (!isStack[i]) dq.push_back(num);
+  }
+}
+
+void solve(){
+  cin >> M;
+  int num;
+  while (M--){
+    cin >> num;
+    if (dq.size()){
+      dq.push_front(num);
+      num = dq.back();
+      dq.pop_back();
+    }
+    cout << num << ' ';
+  }
+}
+
 int main(){
-    ios::sync_with_stdio(false);
-    cin.tie(0); cout.tie(0);
-
-    int n,m,tmp;
-
-    cin>>n;
-    int ds[n];
-
-    deque<int> dq;
-
-    for(int i=0; i<n;i++) {
-        cin>>ds[i];
-    }
-    for(int i=0; i<n;i++) {
-        cin>>tmp;
-        if(!ds[i]) dq.push_back(tmp); 
-    }
-        
-    cin>>m;
-    for(int i=0;i<m;i++){
-        cin>>tmp; 
-        dq.push_front(tmp);
-        tmp=dq.back(); 
-        dq.pop_back();
-        cout<<tmp<<' ';
-    }
+  input();
+  solve();
+  return 0;
 }
