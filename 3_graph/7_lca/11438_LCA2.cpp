@@ -2,14 +2,13 @@
 #include <vector>
 #include <cmath>
 #define fastio ios::sync_with_stdio(false);cin.tie(0);cout.tie(0);
-#define pow 18
 using namespace std;
 
 int n, m;
 int max_lev;
 vector<int> edge[100001];
 int level[100001];
-int parent[100001][pow];
+int parent[100001][18];
 
 void input(){
     fastio
@@ -21,6 +20,9 @@ void input(){
         edge[b].push_back(a);
     }
     max_lev = (int)floor(log2(100001));
+    // for (int i = 0; i <= n; i ++){
+    //     parent[i].resize(max_lev + 1, 0);
+    // }
 }
 
 void set_tree(int cur){
