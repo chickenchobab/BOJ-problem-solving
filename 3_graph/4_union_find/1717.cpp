@@ -1,48 +1,55 @@
 #include <iostream>
+#include <algorithm>
+#include <vector>
+#define fastio ios::sync_with_stdio(false);cin.tie(0);cout.tie(0);
 
 using namespace std;
 
-int n,m,a,b;
-int parent[1000001];
+int n, m;
+vector<int> parent;
 
-void init(){
-    for(int i=0; i<=n; i++)
-        parent[i]=-1;
+void input(){
+  fastio
+  cin >> n >> m;
 }
 
 int find(int x){
-    if(parent[x]<0) return x;
-    else return parent[x]=find(parent[x]);
+  if (parent[x] < 0) return x;
+  return parent[x] = find(parent[x]);
 }
 
 void merge(int a, int b){
-    a=find(a);
-    b=find(b);
-    if(parent[a]<parent[b])
-        parent[b]=a;
-    else{
-        if(parent[a]==parent[b])
-            parent[b]--;
-        parent[a]=b;
-    }
+  a = find(a);
+  b = find(b);
+
+  if (a == b) return;
+
+  if (parent[a] < parent[b])
+    parent[b] = a;
+  else {
+    if (parent[a] == parent[b])
+      parent[b]--;
+    parent[a] = b;
+  }
+}
+
+void solve(){
+  bool order;
+  int a, b;
+
+  parent.resize(n + 1, -1);
+
+  while (m--){
+    cin >> order >> a >> b;
+    if (order) 
+      find(a) == find(b) ? cout << "yes\n" : cout << "no\n";
+    else
+      merge(a, b);
+  }
 }
 
 int main(){
-    ios::sync_with_stdio(false);
-    cin.tie(0);
-    cin>>n>>m;
-    init();
-    int order;
-    for(int i=1;i<=m;i++){
-        cin>>order>>a>>b;
-        if(order==0){
-            if(find(a)==find(b)) continue;
-            merge(a,b);
-        }
-        else{
-            if(find(a)==find(b)) cout<<"yes\n";
-            else cout<<"no\n";
-        }
-    }
-
+  input();
+  solve();
+  return 0;
 }
