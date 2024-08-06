@@ -10,7 +10,7 @@ void input(){
 }
 
 void solve(){
-
+  
 }
 
 int main(){

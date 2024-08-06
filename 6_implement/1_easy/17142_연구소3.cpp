@@ -10,9 +10,9 @@ using namespace std;
 int n, m, ans, wall, virus;
 int map[51][51];
 typedef pair<int, int> p;
-typedef struct NODE{
+typedef struct ELEMENT{
     int i, j, dist;
-}node;
+}element;
 vector<p> pos;
 int di[] = {1, -1, 0, 0}, dj[] = {0, 0, 1, -1};
 
@@ -33,7 +33,7 @@ void input(){
 }
 
 int bfs(){
-    queue<node> q;
+    queue<element> q;
     bool visited[n + 1][n + 1] = {0,};
     int extra_virus = 0;
 
@@ -47,11 +47,8 @@ int bfs(){
     }
 
     while (q.size()) {
-        node f = q.front();
+        auto [i, j, dist] = q.front();
         q.pop();
-
-        int i, j, dist;
-        i = f.i, j = f.j, dist = f.dist;
 
         for (int d = 0; d < 4; d ++){
             int ni = i + di[d];

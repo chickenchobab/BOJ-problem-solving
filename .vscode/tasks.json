@@ -12,6 +12,7 @@
             "command": "g++",
             "args": [
                 "${file}",
+                "-std=c++17",
                 "-o",
                 "${fileDirname}/${fileBasenameNoExtension}"
             ],
@@ -67,10 +68,11 @@
         {
             "type": "cppbuild",
             "label": "C/C++: g++.exe 활성 파일 빌드",
-            "command": "C:\\MinGW\\bin\\g++.exe",
+            "command": "C:\\Program Files\\mingw-w64\\x86_64-13.2.0-release-win32-seh-ucrt-rt_v11-rev1\\mingw64\\bin\\g++.exe",
             "args": [
                 "-fdiagnostics-color=always",
                 "-g",
+                "-std=c++17",
                 "${file}",
                 "-o",
                 "${fileDirname}\\${fileBasenameNoExtension}.exe"

@@ -9,12 +9,12 @@ using namespace std;
 int n, m, hx, hy, ex, ey;
 bool map[1001][1001];
 
-typedef struct NODE{
+typedef struct ELEMENT{
     int i, j;
     int d;
     bool flag;
-}node;
-queue<node> q;
+}element;
+queue<element> q;
 int visited[1001][1001];
 int di[] = {1, -1, 0, 0}, dj[] = {0, 0, 1, -1};
 
@@ -36,11 +36,9 @@ int bfs(){
     visited[hx][hy] = 0;
     
     while (q.size()) {
-        node f = q.front();
-        i = f.i, j = f.j, d = f.d, flag = f.flag;
+        auto [i, j, d, flag] = q.front();
         q.pop();
 
-        // cout << i << ' ' << j << ' ' << d << '\n';
         if (i == ex && j == ey) return d;
 
         for (int dir = 0; dir < 4; dir ++){

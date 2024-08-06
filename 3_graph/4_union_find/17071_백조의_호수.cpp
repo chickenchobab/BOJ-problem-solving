@@ -43,14 +43,14 @@ void init(){
   }
 }
 
-int findParent(int x){
+int find(int x){
   if (parent[x] == x) return x;
-  return parent[x] = findParent(parent[x]);
+  return parent[x] = find(parent[x]);
 }
 
-void unite(int a, int b){
-  a = findParent(a);
-  b = findParent(b);
+void merge(int a, int b){
+  a = find(a);
+  b = find(b);
 
   if (a == b) return;
 
@@ -61,14 +61,13 @@ void unite(int a, int b){
 void checkWater(){
 
   for (auto &water : waters){
-    int i = water.first;
-    int j = water.second;
+    auto [i, j] = water;
     for (int d = 0; d < 4; ++d){
       int ni = i + di[d];
       int nj = j + dj[d];
       if (ni < 0 || ni >= R || nj < 0 || nj >= C) continue;
       if (map[ni][nj] != 'O') continue;
-      unite(i * C + j, ni * C + nj);
+      merge(i * C + j, ni * C + nj);
     }
   }
 }
@@ -99,7 +98,7 @@ void solve(){
 
   while (1){
     checkWater();
-    if (findParent(swans[0]) == findParent(swans[1])) break;
+    if (find(swans[0]) == find(swans[1])) break;
     time++;
     meltIce();
   }

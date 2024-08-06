@@ -9,10 +9,10 @@ int N, M;
 char map[11][11];
 bool visited[11][11][11][11];
 int di[] = {1, -1, 0, 0}, dj[] = {0, 0, 1, -1};
-typedef struct NODE{
+typedef struct ELEMENT{
   int ri, rj, bi, bj, time;
-}node;
-queue<node> q;
+}element;
+queue<element> q;
 int ri, rj, bi, bj;
 
 void input(){
@@ -29,7 +29,7 @@ void input(){
   }
 }
 
-void move(node f, int d){
+void move(element f, int d){
   bool rstop, bstop;
   ri = f.ri, rj = f.rj, bi = f.bi, bj = f.bj;
 
@@ -60,7 +60,7 @@ int bfs(){
   visited[ri][rj][bi][bj] = 1;
 
   while (q.size()){
-    node f = q.front();
+    element f = q.front();
     q.pop();
     if (map[f.ri][f.rj] == 'O') 
       return 1;
