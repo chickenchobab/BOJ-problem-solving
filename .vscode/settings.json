@@ -56,7 +56,7 @@
         "unordered_set": "cpp"
     },
     "C_Cpp.errorSquiggles": "disabled",
-    "editor.fontFamily": "JetBrains Mono, malgun gothic",
-    "editor.fontLigatures": false,
+    "editor.fontFamily": "D2Coding",
+    "editor.fontLigatures": true,
     "cmake.configureOnOpen": false
 }

@@ -18,7 +18,7 @@ void input(){
     }
 }
 
-void floyd_warshall(){
+void floydWarshall(){
 
     for (int s = 1; s <= n; s ++){
         for (int i = 1; i <= n; i ++){
@@ -44,7 +44,7 @@ bool check(int num){
 int main(){
     input();
 
-    floyd_warshall();
+    floydWarshall();
     
     int cnt = 0;
     for (int i = 1; i <= n; i ++){

@@ -9,7 +9,7 @@ using namespace std;
 int N, M, K;
 bool map[1001][1001];
 int di[] = {1, -1, 0, 0}, dj[] = {0, 0, 1, -1};
-int minBreakCnt[1001][1001];
+int minBreaks[1001][1001];
 typedef struct ELEMENT{
   int i, j, dst, cnt;
   bool day;
@@ -24,20 +24,20 @@ void input(){
     cin >> str;
     for (int j = 1; j <= M; ++j){
       map[i][j] = str[j - 1] - '0';
-      minBreakCnt[i][j] = MAX;
+      minBreaks[i][j] = MAX;
     }
   }
 }
 
 int moveBreakingWalls(){
   q.push({1, 1, 1, 0, 1});
-  minBreakCnt[1][1] = 0;
+  minBreaks[1][1] = 0;
 
   while (q.size()){
     auto [i, j, dst, cnt, day] = q.front();
     q.pop();
 
-    if (i == N && j == M) 
+    if (i == N && j == M)
       return dst;
 
     for (int d = 0; d < 4; ++d){
@@ -47,9 +47,9 @@ int moveBreakingWalls(){
       if (map[ni][nj]){
         // There is no reason to renew older and richer one
         if (cnt == K) continue;
-        if (minBreakCnt[ni][nj] <= cnt + 1) continue;
+        if (minBreaks[ni][nj] <= cnt + 1) continue;
         if (day) {
-          minBreakCnt[ni][nj] = cnt + 1;
+          minBreaks[ni][nj] = cnt + 1;
           q.push({ni, nj, dst + 1, cnt + 1, 0});
         }
         else {
@@ -57,8 +57,8 @@ int moveBreakingWalls(){
         }
       }
       else {
-        if (minBreakCnt[ni][nj] <= cnt) continue;
-        minBreakCnt[ni][nj] = cnt;
+        if (minBreaks[ni][nj] <= cnt) continue;
+        minBreaks[ni][nj] = cnt;
         q.push({ni, nj, dst + 1, cnt, !day});
       }
     }

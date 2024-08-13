@@ -13,7 +13,7 @@ void input(){
   cin >> T;
 }
 
-void query(){
+void calNextOrder(){
   int i, j, len;
   len = str.length(); 
 
@@ -28,7 +28,7 @@ void query(){
 void solve(){
   while (T --){
     cin >> str;
-    query();
+    calNextOrder();
     cout << str << '\n';
   }
 }
