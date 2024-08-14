@@ -1,80 +1,70 @@
 #include <iostream>
 #include <algorithm>
 #include <vector>
+#define fastio ios::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
 using namespace std;
 
-int n, m, r;
-int arr[301][301];
-vector<int> skin;
-
+int N, M, R;
+int A[301][301];
+vector<vector<int>> peels;
+vector<int> start;
 
 void input(){
-    ios::sync_with_stdio(false);
-    cout.tie(0);
-    cin >> n >> m >> r;
-    for (int i = 1; i <= n; i ++){
-        for (int j = 1; j <= m; j ++){
-            cin >> arr[i][j];
-        }
-    } 
+  fastio
+  cin >> N >> M >> R;
+  for (int i = 1; i <= N; ++i){
+    for (int j = 1; j <= M; ++j){
+      cin >> A[i][j];
+    }
+  }
 }
 
-void peel(int idx){
-
-    int i, j;
-    skin.clear();
-
-    i = idx;
-    for (j = idx; j <= (m + 1) - idx; j ++){
-        skin.push_back(arr[i][j]);
-    }j --;
-    for (i = idx + 1; i <= (n + 1) - idx; i ++){
-        skin.push_back(arr[i][j]);
-    }i --;
-    for (j = j - 1; j >= idx; j --){
-        skin.push_back(arr[i][j]);
-    }j ++;
-    for (i = i - 1; i > idx; i --){
-        skin.push_back(arr[i][j]);
-    }i ++;
-    
+void peel(){
+  int i, j, minR, minC, maxR, maxC;
+  for (int p = 0; p < peels.size(); ++p){
+    minR = p + 1, minC = p + 1, maxR = N + 1 - minR, maxC = M + 1 - minC;
+    i = minR, j = minC;
+    for (; i < maxR; ++i) peels[p].push_back(A[i][j]);
+    for (; j < maxC; ++j) peels[p].push_back(A[i][j]);
+    for (; i > minR; --i) peels[p].push_back(A[i][j]);
+    for (; j > minC; --j) peels[p].push_back(A[i][j]);
+  }
 }
 
-void rotate(int idx){
-    
-    int i, j;
-    int arr_idx = 0;
-    int skin_size = skin.size();
+void rotate(){
+  int idx, i, j, minR, minC, maxR, maxC;
+  for (int p = 0; p < peels.size(); ++p){
+    start[p] = (start[p] + peels[p].size() - R % peels[p].size()) % peels[p].size();
+    minR = p + 1, minC = p + 1, maxR = N + 1 - minR, maxC = M + 1 - minC;
+    idx = start[p], i = minR, j = minC;
 
-    i = idx;
-    for (j = idx; j <= (m + 1) - idx; j ++, arr_idx ++){
-        arr[i][j] = skin[(arr_idx + r) % skin_size];
-    }j --;
-    for (i = idx + 1; i <= (n + 1) - idx; i ++, arr_idx ++){
-        arr[i][j] = skin[(arr_idx + r) % skin_size];
-    }i --;
-    for (j = j - 1; j >= idx; j --, arr_idx ++){
-        arr[i][j] = skin[(arr_idx + r) % skin_size];
-    }j ++;
-    for (i = i - 1; i > idx; i --, arr_idx ++){
-        arr[i][j] = skin[(arr_idx + r) % skin_size];
-    }i ++;
+    for (; i < maxR; ++i) 
+      A[i][j] = peels[p][idx], idx = (idx + 1) % peels[p].size();
+    for (; j < maxC; ++j) 
+      A[i][j] = peels[p][idx], idx = (idx + 1) % peels[p].size();
+    for (; i > minR; --i) 
+      A[i][j] = peels[p][idx], idx = (idx + 1) % peels[p].size();
+    for (; j > minC; --j) 
+      A[i][j] = peels[p][idx], idx = (idx + 1) % peels[p].size();
+  }
 }
 
+void solve(){
+  peels.resize(min(N, M) / 2);
+  start.resize(min(N, M) / 2, 0);
+  peel();
+  rotate();
+  for (int i = 1; i <= N; ++i){
+    for (int j = 1; j <= M; ++j){
+      cout << A[i][j] << ' ';
+    }
+    cout << '\n';
+  }
+}
 
 int main(){
-    input();
-
-    int max_idx = min(n, m) / 2;
-    for (int idx = 1; idx <= max_idx; idx ++){
-        peel(idx);
-        rotate(idx);
-    }
-
-    for (int i = 1; i <= n; i ++){
-        for (int j = 1; j <= m; j ++){
-            cout << arr[i][j] << ' ';
-        }
-        cout << '\n';
-    }
+  input();
+  solve();
+  return 0;
 }
