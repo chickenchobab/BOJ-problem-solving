@@ -1,28 +1,43 @@
 #include <iostream>
+#include <algorithm>
+#include <vector>
+#define fastio ios::sync_with_stdio(false);cin.tie(0);cout.tie(0);
 
 using namespace std;
 
-int t,x,a[41],b[41],dp[41];
+int T;
+int N;
+vector<int> zeroCnt(41, -1), oneCnt(41, -1);
+
+void input(){
+  fastio
+  cin >> T;
+}
+
+int getFiboZero(int x){
+  if (zeroCnt[x] != -1) return zeroCnt[x];
+  return zeroCnt[x] = getFiboZero(x - 1) + getFiboZero(x - 2);
+}
+
+int getFiboOne(int x){
+  if (oneCnt[x] != -1) return oneCnt[x];
+  return oneCnt[x] = getFiboOne(x - 1) + getFiboOne(x - 2);
+}
+
+void solve(){
+  zeroCnt[0] = 1; 
+  zeroCnt[1] = 0;
+  oneCnt[0] = 0;
+  oneCnt[1] = 1;
+
+  while (T--){
+    cin >> N;
+    cout << getFiboZero(N) << ' ' << getFiboOne(N) << '\n';
+  }
+}
 
 int main(){
-    ios::sync_with_stdio(false);
-    cin.tie(0); cout.tie(0);
-    cin>>t;
-    while(t--){
-
-        cin>>x;
-        for(int i=0;i<=x;i++){
-            a[i]=b[i]=dp[i]=0;
-        }
-        a[0]=1, a[1]=0;
-        b[0]=0, b[1]=1;
-        
-        for(int i=2;i<=x;i++){
-            a[i]=a[i-1]+a[i-2];
-            b[i]=b[i-1]+b[i-2];
-        }
-        //fibonacci(x);
-
-        cout<<a[x]<<" "<<b[x]<<'\n';
-    }
+  input();
+  solve();
+  return 0;
 }
