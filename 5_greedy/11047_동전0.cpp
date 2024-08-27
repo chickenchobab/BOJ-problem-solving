@@ -1,32 +1,34 @@
 #include <iostream>
+#include <algorithm>
+#include <vector>
+#define fastio ios::sync_with_stdio(false);cin.tie(0);cout.tie(0);
 
 using namespace std;
 
-int n, k;
-int coin[11];
+int N, K;
+vector<int> value(10);
 
 void input(){
+  cin >> N >> K;
+  for (int i = 0; i < N; ++i)
+    cin >> value[i];
+}
 
-    ios::sync_with_stdio(false);
-    cin.tie(0);
-    cout.tie(0);
-    cin >> n >> k;
-    for (int i = 1; i <= n; i ++){
-        cin >> coin[i];
-    }
+void solve(){
+  int answer = 0;
+  // greedy because of the one coin
+  sort(value.rbegin(), value.rend());
+  for (int i = 0; i < N; ++i){
+    if (K < value[i]) continue;
+    answer += (K / value[i]);
+    K %= value[i];
+  }
+  cout << answer;
 }
 
 int main(){
-
-    input();
-
-    // 동전의 배수관계
-    int cnt = 0;
-    for (int i = n; i >= 1; i --){
-        cnt += (k / coin[i]);
-        k %= coin[i];
-    }
-
-    cout << cnt;
-
+  fastio
+  input();
+  solve();
+  return 0;
 }

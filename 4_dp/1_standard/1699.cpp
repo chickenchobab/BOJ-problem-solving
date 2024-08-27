@@ -5,23 +5,24 @@
 
 using namespace std;
 
-int n;
-int dp[100001];
+int N;
 
 void input(){
   fastio
-  cin >> n;
+  cin >> N;
 }
 
 void solve(){
-  int num;
-  int answer = -1111111111;
-  for (int i = 1; i <= n; ++i){
-    cin >> num;
-    dp[i] = max(dp[i - 1] + num, num);
-    answer = max(answer, dp[i]);
+  vector<int> dp(N + 1, N);
+  
+  dp[0] = 0;
+  for (int i = 1; i <= N; ++i){
+    for (int j = 1; j * j <= i; j++){
+      dp[i] = min(dp[i], dp[i - j * j] + 1);
+    }
   }
-  cout << answer;
+
+  cout << dp[N];
 }
 
 int main(){

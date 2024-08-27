@@ -6,7 +6,7 @@
 using namespace std;
 
 void input(){
-  fastio
+  
 }
 
 void solve(){
@@ -14,6 +14,7 @@ void solve(){
 }
 
 int main(){
+  fastio
   input();
   solve();
   return 0;

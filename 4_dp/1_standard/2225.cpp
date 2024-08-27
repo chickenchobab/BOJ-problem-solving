@@ -6,26 +6,27 @@
 using namespace std;
 
 typedef long long ll;
-int n, k;
+int N, K;
 int dp[201][201];
 
 void input(){
     fastio
-    cin >> n >> k;
+    cin >> N >> K;
 }
 
-int solve(int i, int j){
+int decompSum(int i, int j){
     if (dp[i][j]) return dp[i][j];
     if (i == 1) return dp[i][j] = j;
     if (j == 1) return dp[i][j] = 1;
-    return dp[i][j] = (solve1(i - 1, j) + solve1(i, j - 1)) % DIV;
+    return dp[i][j] = (decompSum(i - 1, j) + decompSum(i, j - 1)) % DIV;
+}
+
+void solve(){
+    cout << decompSum(N, K);
 }
 
 int main(){
     input();
-
-    solve(n, k);
-    cout << dp[n][k];
-    
+    solve();
     return 0;
 }

@@ -5,26 +5,25 @@
 
 using namespace std;
 
-int n;
-int dp[100001];
+int N;
+int B;
 
 void input(){
-  fastio
-  cin >> n;
+  cin >> N >> B;
 }
 
 void solve(){
-  int num;
-  int answer = -1111111111;
-  for (int i = 1; i <= n; ++i){
-    cin >> num;
-    dp[i] = max(dp[i - 1] + num, num);
-    answer = max(answer, dp[i]);
+  string answer = "";
+  int digit = 1;
+  while (N){
+    answer = (char)(N % B > 9 ? N % B - 10 + 'A' : N % B + '0') + answer;
+    N /= B;
   }
   cout << answer;
 }
 
 int main(){
+  fastio
   input();
   solve();
   return 0;

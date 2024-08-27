@@ -5,23 +5,27 @@
 
 using namespace std;
 
-int n;
-int dp[100001];
+int n, k;
+int value[101];
 
 void input(){
   fastio
-  cin >> n;
+  cin >> n >> k;
+  for (int i = 1; i <= n; ++i)
+    cin >> value[i];
 }
 
 void solve(){
-  int num;
-  int answer = -1111111111;
+  vector<int> dp(k + 1, 0);
+
+  dp[0] = 1;
   for (int i = 1; i <= n; ++i){
-    cin >> num;
-    dp[i] = max(dp[i - 1] + num, num);
-    answer = max(answer, dp[i]);
+    for (int j = value[i]; j <= k; ++j){
+      dp[j] += dp[j - value[i]];
+    }
   }
-  cout << answer;
+
+  cout << dp[k];
 }
 
 int main(){

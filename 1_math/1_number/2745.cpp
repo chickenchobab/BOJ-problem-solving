@@ -5,26 +5,26 @@
 
 using namespace std;
 
-int n;
-int dp[100001];
+string N;
+int B;
 
 void input(){
-  fastio
-  cin >> n;
+  cin >> N >> B;
 }
 
 void solve(){
-  int num;
-  int answer = -1111111111;
-  for (int i = 1; i <= n; ++i){
-    cin >> num;
-    dp[i] = max(dp[i - 1] + num, num);
-    answer = max(answer, dp[i]);
+  int answer = 0;
+  int digit = 1;
+  for (int i = N.length() - 1; i >= 0; --i){
+    if (isalpha(N[i])) answer += digit * (N[i] - 'A' + 10);
+    else answer += digit * (N[i] - '0');
+    digit *= B;
   }
   cout << answer;
 }
 
 int main(){
+  fastio
   input();
   solve();
   return 0;
