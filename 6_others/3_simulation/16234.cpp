@@ -1,105 +1,104 @@
 #include <iostream>
 #include <algorithm>
-#include <queue>
 #include <vector>
+#include <unordered_map>
 #define fastio ios::sync_with_stdio(false);cin.tie(0);cout.tie(0);
 
 using namespace std;
 
 int N, L, R;
-int popul[51][51];
-
-bool visited[51][51];
-int di[] = {1, -1, 0, 0}, dj[] = {0, 0, 1, -1};
-typedef pair<int, int> point;
-queue<point> q;
-vector<point> change;
-bool found;
+vector<int> population, sumPopulation, parent;
+int dr[] = {1, 0}, dc[] = {0, 1};
 
 void input(){
-    fastio
-    cin >> N >> L >> R;
-    for (int i = 1; i <= N; ++ i){
-        for (int j = 1; j <= N; ++ j){
-            cin >> popul[i][j];
-        }
+  cin >> N >> L >> R;
+  population.resize(N * N);
+  for (int i = 0; i < N; ++i){
+    for (int j = 0; j < N; ++j){
+      cin >> population[i * N + j];
     }
+  }
 }
 
-bool isvalid(int i, int j, int ni, int nj){
-    if (ni < 1 || ni > N || nj < 1 || nj > N) return false;
-    if (visited[ni][nj]) return false;
-    int gap = abs(popul[ni][nj] - popul[i][j]);
-    if (gap < L || gap > R) return false;
-    return true;
+int find(int x){
+  if (parent[x] < 0) return x;
+  return parent[x] = find(parent[x]);
 }
 
-int calc_popul(int i, int j){
-    int sum, cnt;
-    
-    sum = popul[i][j], cnt = 1;
-    q.push({i, j});
-    visited[i][j] = 1;
+void unite(int a, int b){
+  a = find(a);
+  b = find(b);
 
-    while (q.size()){
-        int i = q.front().first; 
-        int j = q.front().second;
-        q.pop();
+  if (parent[a] < parent[b]){
+    parent[a] += parent[b];
+    parent[b] = a;
+  }
+  else {
+    parent[b] += parent[a];
+    parent[a] = b;
+  }
+}
 
-        for (int d = 0; d < 4; ++ d){
-            int ni = i + di[d];
-            int nj = j + dj[d];
-            if (isvalid(i, j, ni, nj)){
-                q.push({ni, nj});
-                change.push_back({ni, nj});
-                visited[ni][nj] = 1;
-                sum += popul[ni][nj];
-                cnt ++;
-            }
+bool isSimilar(int a, int b){
+  int gap = abs(a - b);
+  return gap >= L && gap <= R;
+}
+
+bool checkBorders(){
+  int a, b;
+  bool ret = 0;
+  for (int r = 0; r < N; ++r){
+    for (int c = 0; c < N; ++c){
+      a = r * N + c;
+      for (int dir = 0; dir < 2; ++dir){
+        int nr = r + dr[dir];
+        int nc = c + dc[dir];
+        if (nr < 0 || nr >= N || nc < 0 || nc >= N) continue;
+        b = nr * N + nc;
+        if (isSimilar(population[a], population[b]) && find(a) != find(b)){
+          unite(a, b);
+          ret = 1;
         }
+      }
     }
-
-    if (cnt == 1) return -1;
-    change.push_back({i, j});
-    return sum / cnt;
+  }
+  return ret;
 }
 
-void mark_popul(int p){
-    for (auto area : change)
-        popul[area.first][area.second] = p;
-    change.clear();
+void calcSumPopulation(){
+  for (int c = 0; c < parent.size(); ++c){
+    sumPopulation[find(c)] += population[c];
+  }
 }
 
-void reset(){
-    for (int i = 1; i <= N; ++ i){
-        for (int j = 1; j <= N; ++ j){
-            visited[i][j] = 0;
-        }
-    }
+void move(){
+  int p, c;
+  for (c = 0; c < parent.size(); ++c){
+    if ((p = find(c)) == -1) continue;
+    population[c] = sumPopulation[p] / parent[p] * -1;
+  }
+}
+
+void init(){
+  parent.assign(N * N, -1);
+  sumPopulation.assign(N * N, 0);
 }
 
 void solve(){
-    int ans = 0;
-    while (1){
-        int p;
-        found = 0;
-        for (int i = 1; i <= N; ++ i){
-            for (int j = 1; j <= N; ++ j){
-                if (visited[i][j]) continue;
-                if ((p = calc_popul(i, j)) == -1) continue;
-                mark_popul(p);
-                found = 1;
-            }
-        }
-        if (found == 0) break;
-        ans ++;
-        reset();
-    }
-    cout << ans;
+  int answer = 0;
+  while(1) {
+    init();
+    if (!checkBorders()) break;
+    ++answer;
+    calcSumPopulation();
+    move();
+  }
+  cout << answer;
 }
 
 int main(){
-    input();
-    solve();
-    return 0;
+  fastio
+  input();
+  solve();
+  return 0;
 }

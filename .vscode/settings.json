@@ -55,8 +55,7 @@
         "numbers": "cpp",
         "unordered_set": "cpp"
     },
-    "C_Cpp.errorSquiggles": "disabled",
-    "editor.fontFamily": "D2Coding",
+    "editor.fontFamily": "Ubuntu Mono",
     "editor.fontLigatures": true,
     "cmake.configureOnOpen": false
 }
