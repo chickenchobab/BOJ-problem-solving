@@ -1,44 +1,58 @@
 #include <iostream>
 #include <algorithm>
-#define MAX 200000
-
+#include <vector>
+#define fastio ios::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+#define MAX 1000000000
 using namespace std;
 
-int main(){
-    ios::sync_with_stdio(false);
-    cin.tie(0); cout.tie(0);
+int N, C;
+vector<int> houses;
 
-    int n,c;
-    long long max,min,mid,ans,v[MAX];
-    cin>>n>>c;
+void input(){
+  cin >> N >> C;
+  houses.resize(N);
+  for (int i = 0; i < N; ++i)
+    cin >> houses[i];
+}
+
+bool isPossible(int minGap){
+
+  int actualMinGap = minGap;
+  int numRouter = 1;
+  int house = houses[0];
+
+  for (int h = 1; h < N && numRouter < C; ++h){
+    int gap = houses[h] - house;
+    if (gap < minGap) continue;
     
-    for(int i=0; i<n; i++){
-        cin>>v[i];
+    ++numRouter;
+    house = houses[h];
+  }
+  
+  return (numRouter == C);
+}
+
+void solve(){
+  sort(houses.begin(), houses.end());
+
+  int answer = 0;
+  int s = 1, e = houses.back() - houses.front();
+
+  while (s <= e){
+    int m = (s + e) / 2;
+    if (isPossible(m)){
+      s = m + 1;
+      answer = m;
     }
+    else e = m - 1;
+  }
 
-    sort(v,v+n);
-    max=v[n-1]-v[0], min=1;
+  cout << answer;
+}
 
-    ans=0;
-    int cnt,idx;
-
-    while(min<=max){
-        cnt=1,idx=0;
-        mid=(min+max)/2;
-        
-        for(int i=idx+1;i<n;i++){
-            if(v[i]-v[idx]>=mid){
-                cnt++; idx=i;
-                //cout<<cnt<<"nd idx is "<<idx<<endl;
-            }
-        } 
-
-        if(cnt<c) max=mid-1;   
-        else{
-            min=mid+1;
-            if(ans<mid) ans=mid;
-        }
-    }
-
-    cout<<ans;
+int main(){
+  fastio
+  input();
+  solve();
+  return 0;
 }

@@ -1,116 +1,124 @@
 #include <iostream>
 #include <algorithm>
-#include <queue>
 #include <vector>
-#include <cstring>
-#define MAX 444
-
+#include <queue>
+#define fastio ios::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+#define ROBOT ('o')
+#define DIRT ('*')
+#define WALL ('x')
+#define MAX (20 * 20 * 11)
 using namespace std;
 
 int w, h;
-int map[21][21];
-
+char room[20][20];
+int dr[] = {1, -1, 0, 0}, dc[] = {0, 0, 1, -1};
 typedef pair<int, int> p;
-int cnt, ans, status;
-int di[] = {1, -1, 0, 0}, dj[] = {0, 0, 1, -1};
+int status;
 
-int vis[21][21], graph[11][11], dp[11][1 << 11];
-
-void init(){
-    ios::sync_with_stdio(false);
-    cin.tie(0);
-    cout.tie(0);
-}
-
-void reset(){
-    cnt = 1, ans = MAX, status = 0;
-    memset(dp, 0, sizeof(dp));
-    memset(graph, 0, sizeof(graph));
-}
-
-bool input(){
-    cin >> w >> h;
-    if (w == 0 && h == 0) return false;
-
-    reset();
-    char ch;
-    for (int i = 1; i <= h; i ++){
-        for (int j = 1; j <= w; j ++){
-            cin >> ch;
-            while (ch == '\n' || ch == ' ') cin >> ch;
-
-            if (ch == 'o') map[i][j] = 1;
-            else if (ch == '*') map[i][j] = ++ cnt;
-            else if (ch == '.') map[i][j] = 0;
-            else map[i][j] = -1;
-        }
+void input(){
+  cin >> w >> h;
+  if (!w && !h) exit(0);
+  string str;
+  for (int r = 0; r < h; ++r){
+    cin >> str;
+    for (int c = 0; c < w; ++c){
+      room[r][c] = str[c];
     }
-    return true;
+  }
 }
 
-void bfs(int i, int j, int cur){
-    queue<p> q;
-    int nxt;
-    memset(vis, 0, sizeof(vis));
+void findNodes(vector<p> &nodes){
+  nodes.push_back({0, 0});
 
-    q.push({i, j});
-    vis[i][j] = 1;
-
-    while (q.size()){
-        int i = q.front().first, j = q.front().second;
-        q.pop();
-        for (int d = 0; d < 4; d ++){
-            int ni = i + di[d], nj = j + dj[d];
-            if (ni < 1 || ni > h || nj < 1 || nj > w) continue;
-            if (vis[ni][nj]) continue;
-            if ((nxt = map[ni][nj]) == -1) continue;
-
-            if (nxt > cur){
-                graph[cur - 1][nxt - 1] = graph[nxt - 1][cur- 1] = vis[i][j];
-            }
-            q.push({ni, nj});
-            vis[ni][nj] = vis[i][j] + 1;
-        }
+  for (int r = 0; r < h; ++r){
+    for (int c = 0; c < w; ++c){
+      if (room[r][c] == ROBOT)
+        nodes.front() = {r, c};
+      else if (room[r][c] == DIRT)
+        nodes.push_back({r, c});
     }
+  }
 }
 
-int dfs(int cur, int visited){
+void bfs(int r, int c, vector<vector<int>> &dist){
+  queue<pair<int, int>> q;
 
-    status = max(status, visited);
+  q.push({r, c});
+  dist[r][c] = 0;
 
-    if (visited == (1 << cnt) - 1)
-        return 0;
+  while (q.size()){
+    auto [r, c] = q.front();
+    q.pop();
 
-    if (dp[cur][visited])
-        return dp[cur][visited];
-
-    dp[cur][visited] = MAX;
-    for (int nxt = 1; nxt < cnt; nxt ++){
-        if (visited & (1 << nxt)) continue;
-        if (graph[cur][nxt] == 0) continue;
-        dp[cur][visited] = min(dp[cur][visited], dfs(nxt, visited | (1 << nxt)) + graph[cur][nxt]);
+    for (int d = 0; d < 4; ++d){
+      int nr = r + dr[d];
+      int nc = c + dc[d];
+      if (nr < 0 || nr >= h || nc < 0 || nc >= w) continue;
+      if (dist[nr][nc] != -1) continue;
+      if (room[nr][nc] == WALL) continue;
+      q.push({nr, nc});
+      dist[nr][nc] = dist[r][c] + 1;
     }
+  }
+}
 
+void makeGraph(vector<vector<p>> &graph, vector<p> &nodes){
+  graph.resize(nodes.size());
+  
+  for (int i = 0; i < nodes.size(); ++i){
+    vector<vector<int>> dist(h, vector<int>(w, -1));
+
+    bfs(nodes[i].first, nodes[i].second, dist);
+    for (int j = i + 1; j < nodes.size(); ++j){
+      int d = dist[nodes[j].first][nodes[j].second];
+      if (d == -1) continue;
+      graph[i].push_back({j, d});
+      graph[j].push_back({i, d});
+    }
+  }
+}
+
+int tsp(int cur, int visited, vector<vector<int>> &dp, vector<vector<p>> &graph){
+  status = max(status, visited);
+  
+  if (visited == (1 << graph.size()) - 1)
+    return dp[cur][visited] = 0;
+  if (dp[cur][visited] != -1)
     return dp[cur][visited];
+  
+  dp[cur][visited] = MAX;
+
+  for (auto edge : graph[cur]){
+    auto [nxt, weight] = edge;
+    if (visited & (1 << nxt)) continue;
+    dp[cur][visited] = min(dp[cur][visited], tsp(nxt, visited | (1 << nxt), dp, graph) + weight);
+  }
+
+  return dp[cur][visited];
 }
 
-void make_graph(){
-    for (int i = 1; i <= h; i ++){
-        for (int j = 1; j <= w; j ++) {
-            if (map[i][j] > 0) bfs(i, j, map[i][j]);
-        }
-    }
+void solve(){
+  int answer;
+  status = 0;
+  vector<vector<p>> graph;
+  vector<p> nodes;
+  vector<vector<int>> dp;
+
+  findNodes(nodes);
+  makeGraph(graph, nodes);
+
+  dp.assign(nodes.size(), vector<int>(1 << nodes.size(), -1));
+  answer = tsp(0, 1, dp, graph);
+
+  status == (1 << nodes.size()) - 1 ? cout << answer : cout << -1;
+  cout << '\n';
 }
 
 int main(){
-    init();
-    while (1){
-        if(!input()) break;
-        make_graph();
-
-        ans = dfs(0, 1);
-        status == (1 << cnt) - 1 ? cout << ans : cout << -1;
-        cout << '\n';
-    }
-    return 0;
+  fastio
+  while (1){
+    input();
+    solve();
+  }
+  return 0;
 }

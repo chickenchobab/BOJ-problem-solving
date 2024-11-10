@@ -60,7 +60,7 @@ bool checkNeighbors(){
   return ret;
 }
 
-void delSameNeighbors(){
+void cleanPlates(){
   int plate, sector;
   for (plate = 0; plate < N; ++plate){
     for (sector = 0; sector < M; ++sector){
@@ -112,7 +112,7 @@ void solve(){
     cin >> x >> d >> k;
     rotatePlate(x, d, k);
     if (checkNeighbors())
-      delSameNeighbors();
+      cleanPlates();
     else
       flattenPlates();
   }

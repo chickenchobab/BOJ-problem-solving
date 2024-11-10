@@ -8,9 +8,7 @@ using namespace std;
 int N;
 int population[10001];
 vector<int> graph[10001];
-// no consecutive 2 good
-// at most 2 consecutive bad in internal
-// if leaf bad its parent good
+int dp[10001][2];
 
 void input(){
   cin >> N;
@@ -24,8 +22,22 @@ void input(){
   }
 }
 
+void selectVillage(int cur, int prv){ 
+ 
+  dp[cur][1] = population[cur];
+
+  for (int nxt : graph[cur]){
+    if (nxt == prv) continue;
+    selectVillage(nxt, cur);
+    dp[cur][0] += max(dp[nxt][0], dp[nxt][1]);
+    dp[cur][1] += dp[nxt][0];
+  }
+}
+
 void solve(){
-  
+  int root = 1;
+  selectVillage(root, 0);
+  cout << max(dp[root][0], dp[root][1]);
 }
 
 int main(){
