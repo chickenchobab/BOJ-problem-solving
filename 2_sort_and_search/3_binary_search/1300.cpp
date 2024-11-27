@@ -22,7 +22,7 @@ ll cntLessEqual(ll num){
 
 void solve(){
   ll answer;
-  ll s = 1, e = (ll)N * (ll)N;
+  ll s = 1, e = (ll)N * N;
 
   while (s <= e){
     ll m = (s + e) / 2;
