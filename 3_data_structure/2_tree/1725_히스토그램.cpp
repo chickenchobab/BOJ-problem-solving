@@ -4,83 +4,79 @@
 #define fastio ios::sync_with_stdio(false);cin.tie(0);cout.tie(0);
 
 using namespace std;
-using etype = long long;
+using etype = int;
 
-int n;
+int N;
 int height[100001];
 
-// one-base segment tree
-class Segtree {
- public:
-  vector<etype> tree;
+class SegTree{
+public:
   int size;
+  vector<etype> tree;
 
-  Segtree(int t) {
-    for (size = 1; size < t; size *= 2);
+  SegTree(int num){
+    for (size = 1; size < num; size *= 2);
     tree.resize(size * 2);
   }
 
-  // update
-  void update(int pos, etype num) {
-    int index = size + pos - 1;
-    tree[index] = num;
-    index /= 2;
-    while (index) {
-      if(height[tree[index * 2]] < height[tree[index * 2 + 1]]) tree[index] = tree[index * 2];
-      else tree[index] = tree[index * 2 + 1];
-      index /= 2;
+  void update(int pos, etype num){
+    int idx = size - 1 + pos;
+    tree[idx] = num;
+    idx /= 2;
+    while (idx){
+      if (height[tree[idx * 2]] < height[tree[idx * 2 + 1]])
+        tree[idx] = tree[idx * 2];
+      else 
+        tree[idx] = tree[idx * 2 + 1];
+      idx /= 2;
     }
   }
 
-  etype query(int left, int right) { return query(1, 1, size, left, right); }
+  etype query(int left, int right){
+    return query(1, 1, size, left, right);
+  }
 
-  etype query(int pos, int start, int end, int left, int right) {
-    if (start > right || end < left) {  // 구하려는 구간이 밖에 있는 경우
+  etype query(int idx, int start, int end, int left, int right){
+    if (start > right || end < left)
       return 0;
-    } else if (left <= start && end <= right) {  // 구하려는 구간이 완전히 안에 있는 경우
-      return tree[pos];
-    } else {  // 구하려는 구간이 걸쳐 있는 경우
-      int mid = (start + end) / 2;
-      etype a = query(pos * 2, start, mid, left, right);
-      etype b = query(pos * 2 + 1, mid + 1, end, left, right);
-      if (height[a] < height[b]) return a;
-      return b;
-    }
-  }
-
-  etype calculate(int left, int right){
-
-    int idx = query(left, right);
-    int h = height[idx];
-    // cout << h << ' ';
-
-    etype area = h * (right - left + 1);
-    
-    if (left < idx) area = max(area, calculate(left, idx - 1));
-    if (idx < right) area = max(area, calculate(idx + 1, right));
-    return area;
-  }
+    if (left <= start && end <= right)
+      return tree[idx];
+    int mid = (start + end) / 2;
+    int a = query(idx * 2, start, mid, left, right);
+    int b = query(idx * 2 + 1, mid + 1, end, left, right);
+    if (height[a] < height[b]) return a;
+    return b;
+  } 
 };
 
-void input(){
-    fastio
-    cin >> n;
+void init(){
+  cin >> N;
+  for (int i = 1; i <= N; ++i)
+    cin >> height[i];
+}
+
+int getMaxRectArea(SegTree &segtree, int left, int right){
+  if (left > right)
+    return 0;
+  int idx = segtree.query(left, right);
+  int area = height[idx] * (right - left + 1);
+
+  int a = getMaxRectArea(segtree, left, idx - 1);
+  int b = getMaxRectArea(segtree, idx + 1, right);
+  return max(max(a, b), area);
 }
 
 void solve(){
-    Segtree segtree(n);
-    int ans = 0;
-    height[0] = 1000000000;
-    for (int i = 1; i <= n; i ++){
-        cin >> height[i];
-        segtree.update(i, i); 
-    }
-    ans = segtree.calculate(1, n);
-    cout << ans;
+  height[0] = 1000000000;
+  SegTree segtree(N);
+  for (int i = 1; i <= N; ++i)
+    segtree.update(i, i);
+  cout << getMaxRectArea(segtree, 1, N);
 }
 
 int main(){
-    input();
-    solve();
-    return 0;
+  fastio
+  init();
+  solve();
+  return 0;
 }

@@ -1,59 +1,73 @@
 #include <iostream>
+#include <algorithm>
 #include <vector>
-#include <cmath>
-
-#define MAX 1000001
+#define fastio ios::sync_with_stdio(false);cin.tie(0);cout.tie(0);
 
 using namespace std;
+using etype = long long;
 
-long long n,m,k,a,b,c;
-long long arr[MAX], tree[4*MAX];
+int N, M, K;
 
-long long init(int s, int e, int node){
-    if(s==e) return tree[node]=arr[s];
-    int mid=(s+e)/2;
-    return tree[node]=init(s,mid,2*node)+init(mid+1,e,2*node+1);
+class SegTree{
+public:
+  int size;
+  vector<etype> tree;
+
+  SegTree(int num){
+    for (size = 1; size < num; size *= 2);
+    tree.resize(size * 2, 0);
+  }
+
+  void update(int pos, etype num){
+    int idx = size - 1 + pos;
+    etype gap = num - tree[idx];
+    while (idx){
+      tree[idx] += gap;
+      idx /= 2;
+    }
+  }
+
+  etype query(int left, int right){
+    return query(1, 1, size, left, right);
+  }
+
+  etype query(int idx, int start, int end, int left, int right){
+    if (start > right || end < left)
+      return 0;
+    if (left <= start && end <= right)
+      return tree[idx];
+    int mid = (start + end) / 2;
+    return query(idx * 2, start, mid, left, right) + query(idx * 2 + 1, mid + 1, end, left, right);
+  }
+};
+
+void init(){
+  cin >> N >> M >> K;
 }
 
-long long sum(int s, int e, int node, int l, int r){
-    if(r<s || l>e) return 0;
-    if(l<=s && r>=e) return tree[node];
+void solve(){
+  SegTree segtree(N);
 
-    int mid=(s+e)/2; 
+  etype num;
+  for (int i = 1; i <= N; ++i){
+    cin >> num;
+    segtree.update(i, num);
+  }
 
-    return sum(s,mid,2*node,l,r)+sum(mid+1, e,2*node+1,l,r);
-}
-
-void update(int s, int e, int node, int idx, long long gap){
-    if(idx<s || idx>e) return;
-    tree[node]+=gap;
-    
-    if(s==e) return;
-    int mid = (s+e)/2;
-
-    update(s,mid,2*node,idx,gap);
-    update(mid+1, e, 2*node+1, idx, gap);
+  int q = M + K;
+  etype a, b, c;
+  while (q--){
+    cin >> a >> b >> c;
+    if (a == 1)
+      segtree.update(b, c);
+    else
+      cout << segtree.query(b, c) << '\n';
+  }
 }
 
 int main(){
-    ios::sync_with_stdio(false);
-    cin.tie(0); cout.tie(0);
-    cin>>n>>m>>k;
-    for(int i=1;i<=n;i++){
-        cin>>arr[i];
-    }
-    init(1,n,1);
-    int t=m+k;
-    while(t--){
-        cin>>a>>b>>c;
-        if(a==1){
-            update(1,n,1,b,c-arr[b]);
-            arr[b]=c;
-        }
-        else{
-            long long ans=sum(1,n,1,b,c);
-            cout<<ans<<'\n';
-        }
-    }
-
+  fastio
+  init();
+  solve();
+  return 0;
 }
