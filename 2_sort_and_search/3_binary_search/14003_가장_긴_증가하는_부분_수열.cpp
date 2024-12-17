@@ -7,8 +7,6 @@ using namespace std;
 
 int N;
 int A[1000001];
-vector<int> backs; // backs of subsequences
-int index[1000001];
 
 void input(){
   fastio
@@ -17,8 +15,9 @@ void input(){
     cin >> A[i];
 }
 
-void print(){
+void getAnswer(vector<int> &backs, vector<int> &index){
   int idx = backs.size() - 1;
+
   vector<int> lis;
   for (int i = N; i >= 1; --i){
     if (index[i] == idx){
@@ -31,6 +30,9 @@ void print(){
 }
 
 void solve(){
+  vector<int> backs;
+  vector<int> index(N + 1);
+
   index[1] = 0;
   backs.push_back(A[1]);
 
@@ -40,14 +42,14 @@ void solve(){
       backs.push_back(A[i]);
     }
     else {
-      // minimize backs of subsequences -> maximize lengths of subsequences
+      // backs의 순서는 배열의 순서와 다르므로 인덱스를 저장한다
       index[i] = lower_bound(backs.begin(), backs.end(), A[i]) - backs.begin();
       backs[index[i]] = A[i];
     }
   }
 
   cout << backs.size() << '\n';
-  print();
+  getAnswer(backs, index);
 }
 
 int main(){
