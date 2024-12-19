@@ -1,45 +1,55 @@
 #include <iostream>
 #include <algorithm>
+#include <vector>
 #define fastio ios::sync_with_stdio(false);cin.tie(0);cout.tie(0);
 
 using namespace std;
 
-int n;
-int arr[2002];
-// set<int> visited;
+int N;
+vector<int> arr;
 
-void input(){
-    fastio
-    cin >> n;
-    for (int i = 1; i <= n; i ++) {
-        cin >> arr[i];
-        // visited.insert(arr[i]);
-    }
+void init(){
+  cin >> N;
+  arr.resize(N);
+  for (int i = 0; i < N; ++i)
+    cin >> arr[i];
 }
 
-void solve(){ 
-    int ans = 0;
-    sort(arr + 1, arr + n + 1);
+void solve(){
+  int answer = 0;
 
-    for (int i = 1; i <= n; ++ i){
-        int s = 1, e = n, sum;
-        while (s < e){
-            if (s == i) {s ++; continue;}
-            if (e == i) {e --; continue;}
-            sum = arr[s] + arr[e];
-            if (sum > arr[i]) e --;
-            else if (sum < arr[i]) s ++;
-            else {
-                ans ++;
-                break;
-            }
-        }
+  sort(begin(arr), end(arr));
+
+  for (int i = 0; i < N; ++i){
+    int s = 0, e = N - 1;
+
+    while (s < e){
+      if (e == i) {
+        --e;
+        continue;
+      }
+      else if (s == i) {
+        ++s;
+        continue;
+      }
+
+      int sum = arr[s] + arr[e];
+      if (sum == arr[i]){
+        ++answer;
+        break;
+      }
+      else if (sum > arr[i])
+        --e;
+      else
+        ++s;
     }
-    cout << ans;
-}
+  }
+  cout << answer;
+} 
 
 int main(){
-    input();
-    solve();
-    return 0;
+  fastio
+  init();
+  solve();
+  return 0;
 }
