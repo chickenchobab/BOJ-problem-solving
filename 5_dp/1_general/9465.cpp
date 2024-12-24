@@ -1,47 +1,40 @@
 #include <iostream>
 #include <algorithm>
+#include <vector>
+#define fastio ios::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+
 using namespace std;
 
-int t;
 int n;
-int st[2][100001], dp[2][100001];
+int s[100001][2];
+int dp[100001][2];
 
 void init(){
-    ios::sync_with_stdio(false);
-    cin.tie(0);
-    cout.tie(0);
-    cin >> t;
+  cin >> n;
+  for (int i = 0; i < 2; ++i)
+    for (int j = 1; j <= n; ++j)
+      cin >> s[j][i];
 }
 
-void input(){
-    cin >> n;
-    for (int i = 0; i < 2; ++ i){
-        for (int j = 1; j <= n; ++ j){
-            cin >> st[i][j];
-            dp[i][j] = 0;
-        }
-    }
+void solve(){
+  dp[1][0] = s[1][0];
+  dp[1][1] = s[1][1];
+
+  for (int i = 2; i <= n; ++i){
+    dp[i][0] = max(dp[i - 2][1], dp[i - 1][1]) + s[i][0];
+    dp[i][1] = max(dp[i - 2][0], dp[i - 1][0]) + s[i][1];
+  }
+
+  cout << max(dp[n][0], dp[n][1]) << '\n';
 }
-
-int solve(){
-
-    dp[0][1] = st[0][1];
-    dp[1][1] = st[1][1];
-
-    for (int i = 2; i <= n; i ++){
-        dp[0][i] = st[0][i] + max(dp[1][i - 1], dp[1][i - 2]);
-        dp[1][i] = st[1][i] + max(dp[0][i - 1], dp[0][i - 2]);
-    }
-
-    return max(dp[0][n], dp[1][n]);
-}
-
 
 int main(){
+  fastio
+  int T;
+  cin >> T;
+  while (T--){
     init();
-    while(t --){
-        input();
-        cout << solve() << '\n';
-    }
-    return 0;
+    solve();
+  }
+  return 0;
 }
