@@ -15,33 +15,42 @@ struct point{
     return x <= p.x;
   }
 };
+
+struct line{
+  point start, end;
+};
+
+line u, v;
 point points[4];
 
 void init(){
-  for (int i = 0; i < 4; ++i)
-    cin >> points[i].x >> points[i].y;
+  int a, b, c, d;
+  for (int i = 0; i < 2; ++i){
+    cin >> a >> b >> c >> d;
+    u = {{a, b}, {c, d}};
+  }
 }
 
-int checkRotation(int a, int b, int c){
-  ll res = (points[b].x - points[a].x) * (points[c].y - points[a].y) - (points[c].x - points[a].x) * (points[b].y - points[a].y);
+int checkRotation(point& a, point& b, point& c){
+  ll res = (b.x - a.x) * (c.y - a.y) - (c.x - a.x) * (b.y - a.y);
   if (res > 0) return 1; // counterclockwise
   if (res < 0) return -1; // clockwise
   return 0; // aligned
 }
 
 bool haveIntersection(){
-  int a = checkRotation(0, 2, 3);
-  int b = checkRotation(1, 2, 3);
-  int c = checkRotation(2, 0, 1);
-  int d = checkRotation(3, 0, 1);
+  int a = checkRotation(u.start, v.start, v.end);
+  int b = checkRotation(u.end, v.start, v.end);
+  int c = checkRotation(v.start, u.start, u.end);
+  int d = checkRotation(v.end, u.start, u.end);
 
   if (a * b <= 0 && c * d <= 0){
     if (a * b == 0 && c * d == 0){ // sharing point or aligned
-      if (points[1] <= points[0]) 
-        swap(points[1], points[0]);
-      if (points[3] <= points[2])
-        swap(points[3], points[2]);
-      return points[2] <= points[1] && points[0] <= points[3];
+      if (u.end <= u.start) 
+        swap(u.end, u.start);
+      if (v.end <= v.start)
+        swap(v.end, v.start);
+      return v.start <= u.end && u.start <= v.end;
     }
     return true;
   }
