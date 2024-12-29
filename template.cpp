@@ -5,11 +5,11 @@
 
 using namespace std;
 
-void init(){
+void solve(){
   
 }
 
-void solve(){
+void init(){
   
 }
 
