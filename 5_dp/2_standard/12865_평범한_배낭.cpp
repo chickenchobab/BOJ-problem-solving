@@ -1,33 +1,36 @@
 #include <iostream>
 #include <algorithm>
+#include <vector>
+#define fastio ios::sync_with_stdio(false);cin.tie(0);cout.tie(0);
 
 using namespace std;
 
-int n, k;
-int w[101], v[101], dp[100001];
+int N, K;
+int W[101], V[101];
 
-void input(){
-    ios::sync_with_stdio(false);
-    cin.tie(0);
-    cout.tie(0);
+void solve(){
+  vector<int> dp(K + 1, 0);
 
-    cin >> n >> k;
-
-    for (int i = 1; i <= n; i ++){
-        cin >> w[i] >> v[i];
+  for (int i = 1; i <= N; ++i){
+    // Same product cannot be duplicated
+    for (int j = K; j >= W[i]; --j){
+      dp[j] = max(dp[j], dp[j - W[i]] + V[i]);
+      // dp[i][j] = max(dp[i - 1][j], dp[i - 1][j - W[i]])
     }
+  }
+
+  cout << dp[K];
+}
+
+void init(){
+  cin >> N >> K;
+  for (int i = 1; i <= N; ++i)
+    cin >> W[i] >> V[i];
 }
 
 int main(){
-
-    input();
-
-    for (int i = 1; i <= n ; i ++){
-        // 같은 물건 분기에서는 계산된 결과를 활용하지 않게 역순 갱신
-        for (int j = k; j >= w[i]; j --){
-            dp[j] = max(dp[j], dp[j - w[i]] + v[i]);
-        }
-    }
-
-    cout << dp[k];
+  fastio
+  init();
+  solve();
+  return 0;
 }
