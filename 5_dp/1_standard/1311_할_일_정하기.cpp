@@ -27,10 +27,11 @@ void solve(){
     for (int i = 0; i < N; ++i)
       numAssigned += (bool)(mask & (1 << i));
     
-    for (int i = 0; i < N; ++i){
-      if (mask & (1 << i)) continue;
-      int &val = dp[mask | (1 << i)];
-      val = min(val, dp[mask] + D[i][numAssigned]);
+    for (int worker = 0; worker < N; ++worker){
+      if (mask & (1 << worker)) continue;
+      // 이중 포문(노동자와 업무)으로 안하고 업무 번호를 배정된 업무의 수로 해도 되는 이유
+      // mask가 모든 배정 업무 수를 반영한다
+      dp[mask | (1 << worker)] = min(dp[mask | (1 << worker)], dp[mask] + D[worker][numAssigned]);
     }
   }
 
