@@ -15,13 +15,13 @@ void init(){
 }
 
 int getGcd(int a, int b){
-  int ret = min(a, b);
-  while (ret > 1){
-    if (a % ret == 0 && b % ret == 0)
-      return ret;
-    --ret;
+  if (a > b) swap(a, b);
+  while (a){
+    int mod = b % a;
+    b = a;
+    a = mod;
   }
-  return ret;
+  return b;
 }
 
 void solve(){
