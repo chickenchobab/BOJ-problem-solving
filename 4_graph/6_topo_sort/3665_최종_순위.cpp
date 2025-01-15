@@ -6,7 +6,7 @@
 
 using namespace std;
 int n, m;
-int t[501];
+// int t[501];
 int ranking[501];
 // vector<int> graph[501];
 int inDegree[501];
@@ -84,10 +84,11 @@ void solve(){
 
 void init(){
   cin >> n;
+  int num;
   for (int r = 1; r <= n; ++r){
-    cin >> t[r];
-    ranking[t[r]] = r;
-    inDegree[t[r]] = r - 1;
+    cin >> num;
+    ranking[num] = r;
+    inDegree[num] = r - 1;
   }
   // for (int i = 1; i <= n; ++i){
   //   graph[i].clear();
