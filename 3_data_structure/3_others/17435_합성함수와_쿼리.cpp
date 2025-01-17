@@ -17,7 +17,7 @@ void setSparseTable(){
       state[i][j] = state[i - 1][state[i - 1][j]];
 }
 
-void handleQueries(){
+void processQueries(){
   cin >> q;
   while (q--){
     int n, x;
@@ -34,6 +34,6 @@ void handleQueries(){
 int main(){
   fastio
   setSparseTable();
-  handleQueries();
+  processQueries();
   return 0;
 }

@@ -33,7 +33,7 @@ int lca(int a, int b){
   return ret;
 }
 
-void handleQueries(){
+void processQueries(){
   int M;
   cin >> M;
   int a, b;
@@ -79,6 +79,6 @@ int main(){
   fastio
   makeGraph();
   setTree();
-  handleQueries();
+  processQueries();
   return 0;
 }
