@@ -67,7 +67,7 @@ void makeGraph(){
   }
 }
 
-void setTree(){
+void traverseTree(){
   level[1] = 1;
   dfs(1);
 }
@@ -75,7 +75,7 @@ void setTree(){
 int main(){
   fastio
   makeGraph();
-  setTree();
+  traverseTree();
   processQueries();
   return 0;
 }
