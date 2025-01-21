@@ -99,7 +99,7 @@ void traverseTree(){
   dfs(1);
 }
 
-void makeGraph(){
+void init(){
   cin >> N;
   int u, v, w;
   for (int e = 1; e < N; ++e){
@@ -111,7 +111,7 @@ void makeGraph(){
 
 int main(){
   fastio
-  makeGraph();
+  init();
   traverseTree();
   processQueries();
   return 0;

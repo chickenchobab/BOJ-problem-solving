@@ -57,7 +57,7 @@ void dfs(int cur){
   }
 }
 
-void makeGraph(){
+void init(){
   cin >> N;
   int a, b;
   for (int e = 1; e < N; ++e){
@@ -74,7 +74,7 @@ void traverseTree(){
 
 int main(){
   fastio
-  makeGraph();
+  init();
   traverseTree();
   processQueries();
   return 0;

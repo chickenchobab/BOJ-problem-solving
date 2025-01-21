@@ -63,7 +63,7 @@ void findScc(){
       dfs(start);
 }
 
-void makeGraph(){
+void init(){
   cin >> V >> E;
   int a, b;
   for (int e = 0; e < E; ++e){
@@ -74,7 +74,7 @@ void makeGraph(){
 
 int main(){
   fastio
-  makeGraph();
+  init();
   findScc();
   printAnswer();
   return 0;
