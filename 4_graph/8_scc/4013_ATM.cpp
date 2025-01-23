@@ -121,7 +121,9 @@ void init(){
     cin >> r;
     hasRestaurant[r] = 1;
   }
+  totalBalance.reserve(500001);
   totalBalance.push_back(0);
+  haveRestaurant.reserve(500001);
   haveRestaurant.push_back(0);
 }
 
