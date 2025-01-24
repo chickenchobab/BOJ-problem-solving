@@ -18,7 +18,7 @@ int indice[500001];
 
 vector<int> totalBalance;
 vector<bool> haveRestaurant;
-vector<int> mergedGraph[500001];
+vector<int> unitGraph[500001];
 int inDegree[500001];
 
 int topoSort(){
@@ -37,7 +37,7 @@ int topoSort(){
     int cur = q.front();
     q.pop();
 
-    for (int nxt : mergedGraph[cur]){
+    for (int nxt : unitGraph[cur]){
       if (--inDegree[nxt] == 0){
         q.push(nxt);
       }
@@ -61,7 +61,7 @@ void mergeNodes(){
     for (int j : graph[i]){
       if (indice[i] == indice[j]) continue;
 
-      mergedGraph[indice[i]].push_back(indice[j]);
+      unitGraph[indice[i]].push_back(indice[j]);
       ++inDegree[indice[j]];
     }
   }

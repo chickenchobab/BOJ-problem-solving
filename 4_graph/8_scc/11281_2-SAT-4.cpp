@@ -11,33 +11,33 @@ stack<int> s;
 int idx;
 int numScc;
 int indice[20001];
-vector<int> values(10001, -1);
+bool solution[10001];
 
 inline int NOT(int n){
   return n % 2 ? n + 1 : n - 1;
 }
 
-void printSolution(){
+void printAnswer(){
   cout << 1 << '\n';
   for (int i = 1; i <= N; ++i)
-    cout << values[i] << ' ';
-}
-
-void assignValue(int cur){
-  values[(cur + 1) / 2] = !(cur % 2);
-  // cout << cur << ':' << (cur + 1) / 2 << ' ' << values[(cur + 1) / 2] << endl;
-
-  for (int nxt : graph[cur]){
-    if (values[(nxt + 1) / 2] != -1) continue;
-    assignValue(nxt);
-  }
+    cout << solution[i] << ' ';
 }
 
 void findSolution(){
+  vector<int> nodes(2 * N + 1);
+  vector<bool> isSet(N + 1, 0);
+
+  for (int i = 1; i <= 2 * N; ++i)
+    nodes[i] = i;
+  
+  sort(begin(nodes) + 1, end(nodes), [](int a, int b){
+    return indice[a] > indice[b];
+  });
+
   for (int i = 1; i <= 2 * N; ++i){
-    if (values[(i + 1) / 2] == -1){
-      // cout << "start \n";
-      assignValue(i);
+    if (!isSet[(nodes[i] + 1) / 2]){
+      isSet[(nodes[i] + 1) / 2] = 1;
+      solution[(nodes[i] + 1) / 2] = (nodes[i] % 2);
     }
   }
 }
@@ -77,7 +77,7 @@ void findScc(){
       dfs(i);
 }
 
-void init(){
+void setGraph(){
   cin >> N >> M;
   int a, b;
   while (M--){
@@ -91,9 +91,9 @@ void init(){
 
 int main(){
   fastio
-  init();
+  setGraph();
   findScc();
   findSolution();
-  printSolution();
+  printAnswer();
   return 0;
 }
