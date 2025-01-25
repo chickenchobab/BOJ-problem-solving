@@ -18,7 +18,7 @@ int indice[500001];
 
 vector<int> totalBalance;
 vector<bool> haveRestaurant;
-vector<int> unitGraph[500001];
+vector<int> sccGraph[500001];
 int inDegree[500001];
 
 int topoSort(){
@@ -37,7 +37,7 @@ int topoSort(){
     int cur = q.front();
     q.pop();
 
-    for (int nxt : unitGraph[cur]){
+    for (int nxt : sccGraph[cur]){
       if (--inDegree[nxt] == 0){
         q.push(nxt);
       }
@@ -56,12 +56,12 @@ int topoSort(){
   return ret;
 }
 
-void mergeNodes(){
+void setSccGraph(){
   for (int i = 1; i <= N; ++i){
     for (int j : graph[i]){
       if (indice[i] == indice[j]) continue;
 
-      unitGraph[indice[i]].push_back(indice[j]);
+      sccGraph[indice[i]].push_back(indice[j]);
       ++inDegree[indice[j]];
     }
   }
@@ -131,7 +131,7 @@ int main(){
   fastio
   init();
   findScc();
-  mergeNodes();
+  setSccGraph();
   cout << topoSort();
   return 0;
 }

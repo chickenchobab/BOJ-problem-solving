@@ -94,7 +94,7 @@
         "typeindex": "cpp",
         "variant": "cpp"
     },
-    "editor.fontFamily": "Ubuntu Mono",
+    "editor.fontFamily": "Consolas",
     "editor.fontLigatures": true,
     "editor.fontWeight": 1,
     "cmake.configureOnOpen": false
