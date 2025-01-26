@@ -24,8 +24,6 @@ void printAnswer(){
 }
 
 int dfs(int cur){
-  if (!isSatisfiable) return 0;
-
   int parent = ++idx;
   indice[cur] = -parent;
   s.push(cur);
@@ -62,7 +60,7 @@ void findScc(){
 
 void setGraph(){
   int a, b;
-  for (int i = 0; i < m; ++i){
+  while (m--){
     cin >> a >> b;
     a = a > 0 ? 2 * a : -2 * a - 1;
     b = b > 0 ? 2 * b : -2 * b - 1;
