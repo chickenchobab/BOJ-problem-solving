@@ -98,7 +98,6 @@ void setGraph(){
       graph[NOT(l[g])].push_back(l[(g + 1) % 3]);
       graph[NOT(l[(g + 1) % 3])].push_back(l[g]);
     }
-    
   }
 }
 

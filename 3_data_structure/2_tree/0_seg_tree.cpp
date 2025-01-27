@@ -24,15 +24,15 @@ class Segtree {
 
   etype query(int left, int right) { return query(1, 1, size, left, right); }
 
+  // Check subtree at idx on which start and end depend.
   etype query(int idx, int start, int end, int left, int right) {
-    if (start > right || end < left) {  // 구하려는 구간이 밖에 있는 경우
+    if (start > right || end < left)
       return 0;
-    } else if (left <= start && end <= right) {  // 구하려는 구간이 완전히 안에 있는 경우
+
+    if (left <= start && end <= right)
       return tree[idx];
-    } else {  // 구하려는 구간이 걸쳐 있는 경우
-      int mid = (start + end) / 2;
-      return query(idx * 2, start, mid, left, right) +
-             query(idx * 2 + 1, mid + 1, end, left, right);
-    }
+
+    int mid = (start + end) / 2;
+    return query(idx * 2, start, mid, left, right) + query(idx * 2 + 1, mid + 1, end, left, right);
   }
 };
