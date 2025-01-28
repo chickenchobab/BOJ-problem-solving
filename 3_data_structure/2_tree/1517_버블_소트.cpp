@@ -3,71 +3,71 @@
 #include <vector>
 #define fastio ios::sync_with_stdio(false);cin.tie(0);cout.tie(0);
 using namespace std;
-using etype = int;
 
-int n;
-pair<int, int> arr[500005];
-
-// one-base segment tree
-class Segtree {
- public:
-  vector<etype> tree;
+class SegmentTree{
+private:
   int size;
+  vector<int> tree;
 
-  Segtree(int t) {
-    for (size = 1; size < t; size *= 2);
-    tree.resize(size * 2);
+public:
+  SegmentTree(int n){
+    for (size = 1; size <= n; size *= 2);
+    tree.assign(size * 2, 0);
   }
 
-  // update
-  void update(int pos, etype diff) {
-    int index = size + pos - 1;
-    while (index) {
-      tree[index] += diff;
-      index /= 2;
+  void update(int pos, int val){
+    int idx = size + pos - 1;
+    while (idx){
+      tree[idx] += val;
+      idx /= 2;
     }
   }
 
-  etype query(int left, int right) { return query(1, 1, size, left, right); }
+  int query(int left, int right){
+    return query(1, 1, size, left, right);
+  }
 
-  etype query(int pos, int start, int end, int left, int right) {
-    if (start > right || end < left) {  // 구하려는 구간이 밖에 있는 경우
+  int query(int idx, int start, int end, int left, int right){
+    if (right < start || end < left)
       return 0;
-    } else if (left <= start && end <= right) {  // 구하려는 구간이 완전히 안에 있는 경우
-      return tree[pos];
-    } else {  // 구하려는 구간이 걸쳐 있는 경우
-      int mid = (start + end) / 2;
-      return query(pos * 2, start, mid, left, right) +
-             query(pos * 2 + 1, mid + 1, end, left, right);
-    }
+    if (left <= start && end <= right)
+      return tree[idx];
+    int mid = (start + end) / 2;
+    return query(2 * idx, start, mid, left, right) + query(2 * idx + 1, mid + 1, end, left, right);
   }
 };
 
-void input(){
-    fastio
-    cin >> n;
-    int num;
-    for (int i = 1; i <= n; i ++) {
-      cin >> num;
-      arr[i] = {num, i};
-    }
-}
+int N;
+pair<int, int> A[500000];
+SegmentTree st(500000);
 
 void solve(){
-    long long ans = 0;
-    Segtree segtree(n);
+  long long answer = 0;
 
-    sort(arr + 1, arr + n + 1);
-    for (int i = 1; i <= n; i ++){
-      // find a smaller num(arr) with larger index(tree)
-      ans += (long long) segtree.query(arr[i].second, n);
-      segtree.update(arr[i].second, 1);
-    }
-    cout << ans;
+  sort(A, A + N);
+
+  for (int i = 0; i < N; ++i){
+    // Find smaller number with bigger index.
+    answer += st.query(A[i].second, N);
+    st.update(A[i].second, 1);
+  }
+
+  cout << answer;
 }
 
+void init(){
+  cin >> N;
+  int num;
+  for (int i = 0; i < N; ++i){
+    cin >> num;
+    A[i] = {num, i + 1};
+  }
+}
+
+
 int main(){
-    input();
-    solve();
-    return 0;
+  fastio
+  init();
+  solve();
+  return 0;
 }

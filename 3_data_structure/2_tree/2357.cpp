@@ -7,10 +7,11 @@
 using namespace std;
 
 class SegmentTree{
-public:
+private:
   int size;
   vector<int> mins, maxes;
 
+public:
   SegmentTree(int n){
     for (size = 1; size <= n; size *= 2);
     mins.assign(size * 2, MAX);

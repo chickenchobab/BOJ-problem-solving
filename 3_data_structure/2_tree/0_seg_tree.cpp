@@ -5,10 +5,11 @@ using etype = long long;
 
 // one-base segment tree
 class Segtree {
- public:
+private:
   vector<etype> tree;
   int size;
 
+public:
   Segtree(int t) {
     for (size = 1; size < t; size *= 2);
     tree.resize(size * 2);
