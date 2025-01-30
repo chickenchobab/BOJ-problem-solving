@@ -2,8 +2,8 @@
 #include <algorithm>
 #include <vector>
 #define fastio ios::sync_with_stdio(false);cin.tie(0);cout.tie(0);
-#define MAX 1000000001
 #define MIN 0
+#define MAX 100001
 using namespace std;
 using range = pair<int, int>;
 
@@ -16,15 +16,27 @@ public:
   SegmentTree(int n){
     for (size = 1; size <= n; size *= 2);
     minTree.assign(size * 2, MAX);
-    maxTree.assign(size * 2, MIN);
+    maxTree.resize(size * 2, MIN);
+
+    int idx = size - 1;
+    for (int i = 1; i <= n; ++i)
+      minTree[idx + i] = maxTree[idx + i] = i;
   }
 
-  void update(int pos, int val){
-    int idx = size + pos - 1;
+  void update(int a, int b){
+    int idx;
 
-    minTree[idx] = maxTree[idx] = val;
-    idx /= 2;
+    swap(minTree[size + a - 1], minTree[size + b - 1]);
+    swap(maxTree[size + a - 1], maxTree[size + b - 1]);
 
+    idx = (size + a - 1) / 2;
+    while (idx){
+      minTree[idx] = min(minTree[idx * 2], minTree[idx * 2 + 1]);
+      maxTree[idx] = max(maxTree[idx * 2], maxTree[idx * 2 + 1]);
+      idx /= 2;
+    }
+
+    idx = (size + b - 1) / 2;
     while (idx){
       minTree[idx] = min(minTree[idx * 2], minTree[idx * 2 + 1]);
       maxTree[idx] = max(maxTree[idx * 2], maxTree[idx * 2 + 1]);
@@ -32,7 +44,6 @@ public:
     }
   }
 
-  // Check subtree at idx on which start and end depend.
   range getMinMax(int left, int right){
     return getMinMax(1, 1, size, left, right);
   }
@@ -50,30 +61,45 @@ public:
   }
 };
 
-int N, M;
-SegmentTree st(100000);
+int N, K;
+SegmentTree *st;
 
-void processQueries(){
-  int a, b;
-  while (M--){
-    cin >> a >> b;
-    range res = st.getMinMax(a, b);
-    cout << res.first << ' ' << res.second << '\n';
+void reset(){
+  delete st;
+}
+
+void solve(){
+  int Q, A, B;
+  while (K--){
+    cin >> Q >> A >> B;
+    ++A;
+    ++B;
+    if (Q){
+      range res = st->getMinMax(A, B);
+      if (A <= res.first && res.second <= B)
+        cout << "YES\n";
+      else 
+        cout << "NO\n";
+    }
+    else {
+      st->update(A, B);
+    }
   }
 }
 
 void init(){
-  cin >> N >> M;
-  int num;
-  for (int i = 1; i <= N; ++i){
-    cin >> num;
-    st.update(i, num);
-  }
+  cin >> N >> K;
+  st = new SegmentTree(N);
 }
 
 int main(){
   fastio
-  init();
-  processQueries();
+  int T;
+  cin >> T;
+  while (T--){
+    init();
+    solve();
+    reset();
+  }
   return 0;
 }
