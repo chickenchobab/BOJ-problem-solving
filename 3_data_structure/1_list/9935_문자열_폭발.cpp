@@ -1,42 +1,49 @@
 #include <iostream>
-#include <algorithm>
+// #include <algorithm>
+// #include <vector>
 #include <string>
-#include <stack>
 #define fastio ios::sync_with_stdio(false);cin.tie(0);cout.tie(0);
-
 using namespace std;
 
-string instr, outstr, bomb;
+string S;
+string bomb;
 
-void input(){
-    fastio
-    cin >> instr >> bomb;
+bool hasBomb(string& answer)
+{
+  if (answer.size() < bomb.size()) return false;
+
+  int j = 0;
+  for (int i = answer.size() - bomb.size(); i < answer.size(); ++i, ++j)
+  {
+    if (answer[i] != bomb[j]) return false;
+  }
+
+  return true;
 }
 
-void solve(){
-    int len = bomb.length();
+int main()
+{
+  fastio
 
-    int i, j;
-    for (i = 0; i < instr.length(); i ++){
-        outstr.push_back(instr[i]);
+  cin >> S >> bomb;
 
-        if (outstr.back() == bomb.back() && outstr.length() >= len){
-            for (j = 0; j < len; j ++){
-                if (outstr[outstr.length() - 1 - j] != bomb[len - 1 - j]) break;
-            }
-            if (j != len) continue;
-            for (j = 0; j < len; j ++){
-                outstr.pop_back();
-            }
-        }
+  string answer;
+
+  for (int i = 0; i < S.size(); ++i)
+  {
+    char c = S[i];
+    answer.push_back(c);
+
+    if (hasBomb(answer))
+    {
+      for (int i = 0; i < bomb.size(); ++i)
+      {
+        answer.pop_back();
+      }
     }
+  }
 
-    if (outstr.length()) cout << outstr;
-    else cout << "FRULA";
-}
-
-int main(){
-    input();
-    solve();
-    return 0;
+  answer.empty() ? cout << "FRULA" : cout << answer;
+  
+  return 0;
 }

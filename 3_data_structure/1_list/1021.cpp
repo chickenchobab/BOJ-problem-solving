@@ -1,29 +1,44 @@
 #include <iostream>
-#include <queue>
 #include <algorithm>
-
+// #include <vector>
+#include <deque>
+#define fastio ios::sync_with_stdio(false);cin.tie(0);cout.tie(0);
 using namespace std;
 
-int main(){
-    int n,m,a=0,b=0,sum=0,tmp; cin>>n>>m;
-    queue<int> q;
+int N, M;
+deque<int> dq;
 
-    for(int i=1;i<=n;i++){
-        q.push(i);
+int main(){
+  fastio
+
+  cin >> N >> M;
+  
+  dq.resize(N);
+  for (int i = 1; i <= N; ++i)
+  {
+    dq[i - 1] = i;
+  }
+
+  int total = 0;
+  
+  int num;
+  while (M--)
+  {
+    cin >> num;
+    int cnt = 0;
+
+    while (dq.front() != num)
+    {
+      dq.push_back(dq.front());
+      dq.pop_front();
+      ++cnt;
     }
-        
-    for(int i=0;i<m;i++){
-        a=0;b=0;
-        cin>>tmp;
-        while(tmp!=q.front()){
-            q.push(q.front());
-            q.pop(); a++;
-        }
-        if(tmp==q.front()) {
-            b=q.size()-a;
-            sum+=min(a,b);
-            q.pop();
-        }
-    }
-    cout<<sum;
+
+    total += min(cnt, (int)dq.size() - cnt);
+    dq.pop_front();
+  }
+
+  cout << total;
+
+  return 0;
 }

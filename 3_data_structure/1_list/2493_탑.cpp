@@ -1,42 +1,40 @@
 #include <iostream>
 #include <algorithm>
-#include <vector>
+// #include <vector>
 #include <stack>
 #define fastio ios::sync_with_stdio(false);cin.tie(0);cout.tie(0);
-
 using namespace std;
 
 int N;
-int height[500005];
-
-void input(){
-  fastio
-  cin >> N;
-  for (int i = 1; i <= N; ++i){
-    cin >> height[i];
-  }
-}
-
-void solve(){
-
-  stack<int> st;
-  vector<int> receiver(N, 0);
-
-  for (int i = N; i >= 1; --i){
-    while (st.size() && height[st.top()] < height[i]){
-      receiver[st.top() - 1] = i;
-      st.pop();
-    }
-    st.push(i);
-  }
-
-  for (int r : receiver){
-    cout << r << ' ';
-  }
-}  
+stack<pair<int, int>> st;
 
 int main(){
-  input();
-  solve();
+  fastio
+
+  cin >> N;
+
+  int height;
+  int receiver;
+  
+  for (int i = 1; i <= N; ++i)
+  {
+    cin >> height;
+    receiver = 0;
+
+    while (!st.empty() && st.top().second <= height)
+    {
+      st.pop();
+    }
+
+    if (!st.empty())
+    {
+      receiver = st.top().first;
+    }
+
+    st.push({i, height});
+
+    cout << receiver << ' ';
+  }
+  
   return 0;
 }
