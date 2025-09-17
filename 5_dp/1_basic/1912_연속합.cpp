@@ -2,30 +2,28 @@
 #include <algorithm>
 #include <vector>
 #define fastio ios::sync_with_stdio(false);cin.tie(0);cout.tie(0);
-
 using namespace std;
 
 int n;
 int dp[100001];
 
-void input(){
+int main()
+{
   fastio
-  cin >> n;
-}
 
-void solve(){
+  cin >> n;
+
+  int answer = -111111111;
+
   int num;
-  int answer = -1111111111;
-  for (int i = 1; i <= n; ++i){
+  for (int i = 1; i <= n; ++i)
+  {
     cin >> num;
     dp[i] = max(dp[i - 1] + num, num);
     answer = max(answer, dp[i]);
   }
-  cout << answer;
-}
 
-int main(){
-  input();
-  solve();
+  cout << answer;
+  
   return 0;
 }

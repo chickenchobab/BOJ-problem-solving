@@ -1,50 +1,55 @@
 #include <iostream>
-#include <algorithm>
-#include <vector>
+// #include <algorithm>
+// #include <vector>
 #define fastio ios::sync_with_stdio(false);cin.tie(0);cout.tie(0);
-
 using namespace std;
 
 int N;
-vector<vector<char>> pattern;
+char grid[3*3*3*3*3*3*3][3*3*3*3*3*3*3];
 
-void input(){
-  cin >> N;
-}
-
-void makePattern(int r, int c, int siz){
-  if (siz == 1) {
-    pattern[r][c] = '*';
+void pointStar(int r, int c, int curSize)
+{
+  if (curSize == 1)
+  {
+    grid[r][c] = '*';
     return;
   }
 
-  int newSiz = siz / 3;
-  for (int i = 0; i < 3; ++i){
-    for (int j = 0; j < 3; ++j){
+  int newSize = curSize / 3;
+
+  for (int i = 0; i < 3; ++i)
+  {
+    for (int j = 0; j < 3; ++j)
+    { 
       if (i == 1 && j == 1) continue;
-      makePattern(r + i * newSiz, c + j * newSiz, newSiz);
+
+      pointStar(r + i * newSize, c + j * newSize, newSize);
     }
   }
 }
 
-void showPattern(){
-  for (int i = 0; i < N; ++i){
-    for (int j = 0; j < N; ++j){
-      cout << pattern[i][j];
+void draw()
+{
+  for (int i = 0; i < N; ++i)
+  {
+    for (int j = 0; j < N; ++j)
+    {
+      if (grid[i][j] == '*')
+        cout << grid[i][j];
+      else
+        cout << ' ';
     }
     cout << '\n';
   }
 }
 
-void solve(){
-  pattern.assign(N, vector<char>(N, ' '));
-  makePattern(0, 0, N);
-  showPattern();
-}
-
-int main(){
+int main()
+{
   fastio
-  input();
-  solve();
+
+  cin >> N;
+  pointStar(0, 0, N);
+  draw();
+
   return 0;
 }

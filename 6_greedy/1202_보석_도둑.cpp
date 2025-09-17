@@ -1,49 +1,50 @@
 #include <iostream>
 #include <algorithm>
+// #include <vector>
 #include <queue>
-
+#define fastio ios::sync_with_stdio(false);cin.tie(0);cout.tie(0);
 using namespace std;
 
-typedef pair<int, int> p;
-typedef long long ll;
+int N, K;
+typedef pair<int, int> pii;
+pii J[300000];
+int C[300000];
 
-int n, m;
-int capacity[300001];
-p jewel[300001];
+int main()
+{
+  fastio
 
-void input(){
-    ios::sync_with_stdio(false);
-    cout.tie(0);
-    cin >> n >> m;
-    for (int i = 1; i <= n; i ++){
-        cin >> jewel[i].first >> jewel[i].second;
+  cin >> N >> K;
+  for (int i = 0; i < N; ++i)
+  {
+    cin >> J[i].first >> J[i].second;
+  }
+  for (int i = 0; i < K; ++i)
+  {
+    cin >> C[i];
+  }
+
+  sort(J, J + N);
+  sort(C, C + K);
+
+  long long answer = 0;
+  priority_queue<int> pq;
+
+  for (int i = 0, j = 0; j < K; ++j)
+  {
+    while (i < N && J[i].first <= C[j])
+    {
+      pq.push(J[i++].second);
     }
-    for (int i = 1; i <= m; i ++){
-        cin >> capacity[i];
+
+    if (!pq.empty())
+    {
+      answer += pq.top();
+      pq.pop();
     }
-}
+  }
 
-int main(){
-    input();
+  cout << answer;
 
-    sort(jewel + 1, jewel + n + 1);
-    sort(capacity + 1, capacity + m + 1);
-
-    ll ans = 0;
-    priority_queue<int> jewel_capable;
-    int idx = 1;
-    for (int i = 1; i <= m; i ++){
-
-        while(idx <= n && jewel[idx].first <= capacity[i]) {
-            jewel_capable.push(jewel[idx].second);
-            idx ++;
-        }
-        
-        if (jewel_capable.size()) {
-            ans += jewel_capable.top();
-            jewel_capable.pop();
-        }
-    }
-    cout << ans;
-     
+  return 0;
 }
