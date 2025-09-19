@@ -1,38 +1,51 @@
 #include <iostream>
-#include <algorithm>
-#include <queue>
+// #include <algorithm>
 #include <vector>
-
+#include <queue>
+#define fastio ios::sync_with_stdio(false);cin.tie(0);cout.tie(0);
 using namespace std;
 
-//typedef priority_queue<int, vector<int>, greater<int>> heap;
-int n,m,a,b;
-vector<int> graph[33333];
+int N, M;
+vector<int> graph[32001];
+int indeg[32001];
 priority_queue<int, vector<int>, greater<int>> pq;
-int ind[33333];
 
-int main(){
+int main()
+{
+  fastio
 
-    ios::sync_with_stdio(false);
-    cin.tie(0); cout.tie(0);
+  cin >> N >> M;
+  int a, b;
+  while (M--)
+  {
+    cin >> a >> b;
+    graph[a].push_back(b);
+    ++indeg[b];
+  }
 
-    cin>>n>>m;
-    while(m--){
-        cin>>a>>b;
-        graph[a].push_back(b);
-        ind[b]++;
+  for (int i = 1; i <= N; ++i)
+  {
+    if (!indeg[i])
+    {
+      pq.push(i);
     }
+  }
 
-    for(int i=1;i<=n;i++){
-        if(ind[i]==0) pq.push(i);    
-        sort(graph[i].begin(), graph[i].end());
+  while (!pq.empty())
+  {
+    int cur = pq.top();
+    pq.pop();
+
+    cout << cur << ' ';
+
+    for (int nxt : graph[cur])
+    {
+      if (--indeg[nxt] == 0)
+      {
+        pq.push(nxt);
+      }
     }
-    while(!pq.empty()){
-        int u=pq.top();
-        pq.pop();
-        cout<<u<<' ';
-        for(int v:graph[u]){
-            if(--ind[v]==0) pq.push(v);
-        }
-    }
+  }
+
+  return 0;
 }
