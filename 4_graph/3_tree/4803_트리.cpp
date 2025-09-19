@@ -1,75 +1,84 @@
 #include <iostream>
+#include <algorithm>
 #include <vector>
-
+#define fastio ios::sync_with_stdio(false);cin.tie(0);cout.tie(0);
 using namespace std;
 
-int n, m, t, cnt;
-vector<int> g[505];
-int visited[505];
+int n, m;
+vector<int> graph[501];
+bool bVisited[501];
+int numCase;
 
-bool input(){
+void reset()
+{
+  for (int i = 1; i <= n; ++i)
+  {
+    graph[i].clear();
+    bVisited[i] = 0;
+  }
+  ++numCase;
+}
+
+bool dfs(int cur, int prv)
+{
+  bVisited[cur] = 1;
+
+  for (int nxt : graph[cur])
+  {
+    if (nxt == prv) continue;
+    if (bVisited[nxt]) return false;
+    if (!dfs(nxt, cur)) return false;
+  }
+
+  return true;
+}
+
+void print(int numTree)
+{
+  if (numTree > 1)
+  {
+    cout << "Case " << numCase << ": A forest of " << numTree << " trees.\n";
+  }
+  else if (numTree == 1)
+  {
+    cout << "Case " << numCase << ": There is one tree.\n";
+  }
+  else
+  {
+    cout << "Case " << numCase << ": No trees.\n";
+  }
+}
+
+int main()
+{
+  fastio
+
+  int a, b;
+  while (1)
+  {
     cin >> n >> m;
-    if (!n && !m) return false;
+    if (!n && !m) break;
 
-    int a, b;
-    for (int i = 1; i <= m; i ++){
-        cin >> a >> b;
-        g[a].push_back(b);
-        g[b].push_back(a);
-    }
-    return true;
-}
+    reset();
 
-void reset(){  
-    cnt = 0;
-    for (int i = 1; i <= n; i ++){
-        g[i].clear();
-        visited[i] = 0;
-    }
-    t ++;
-}
-
-bool dfs(int v, int u){
-    visited[v] = 1;
-
-    for (int w : g[v]){
-        if (w == u) continue;
-        if (visited[w]) return false;
-        if (!dfs(w, v)) return false;
+    for (int i = 0; i < m; ++i)
+    {
+      cin >> a >> b;
+      graph[a].push_back(b);
+      graph[b].push_back(a);
     }
 
-    return true;
-}
+    int numTree = 0;
 
-void check(){
-    for (int i = 1; i <= n; i ++){
-        if (visited[i]) continue;
-        if (dfs(i, 0)) cnt ++;
-    }
-}
+    for (int i = 1; i <= n; ++i)
+    {
+      if (bVisited[i]) continue;
 
-int main(){
-
-    ios::sync_with_stdio(false);
-    cin.tie(0); 
-    cout.tie(0);
-
-    t = 1;
-
-    while(1){
-
-        if (!input()) break;
-
-        check();
-
-        cout << "Case " << t << ": ";
-        if (cnt == 0) cout << "No trees.";
-        else if (cnt == 1) cout << "There is one tree.";
-        else cout << "A forest of " << cnt << " trees.";
-        cout << '\n';
-
-        reset();
+      numTree += dfs(i, 0);
     }
 
-    return 0;
+    print(numTree);
+  }
+
+  return 0;
 }
