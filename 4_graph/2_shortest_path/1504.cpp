@@ -1,79 +1,72 @@
 #include <iostream>
 #include <algorithm>
-#include <queue>
 #include <vector>
+#include <queue>
 #define fastio ios::sync_with_stdio(false);cin.tie(0);cout.tie(0);
-#define MAX 200000000
 using namespace std;
+
 int N, E;
-typedef struct EDGE{
-  int wgh, nod;
-}edge;
-struct cmp{
-  bool operator()(edge &a, edge &b){
-    return a.wgh > b.wgh;
-  }
-};
-priority_queue<edge, vector<edge>, cmp> pq;
-vector<edge> edges[808];
+using pii = pair<int, int>;
+vector<pii> graph[801];
 int u, v;
-int dus, due, duv, dvs, dve; // s = 1, e = n
+int duv, dsu, dsv, due, dve;
 
-void input(){
-  fastio
-  cin >> N >> E;
-  int a, b, c;
-  for (int i = 1; i <= E; ++ i){
-    cin >> a >> b >> c;
-    edges[a].push_back({c, b});
-    edges[b].push_back({c, a});
-  }
-  cin >> u >> v;
-}
+void dijkstra(int start)
+{
+  priority_queue<pii, vector<pii>, greater<pii>> pq;
+  vector<int> dist(N + 1, 222222222);
 
-void dijkstra(int s){
-  int dst[N + 1];
+  dist[start] = 0;
+  pq.push({0, start});
 
-  for (int i = 1; i <= N; ++ i) dst[i] = MAX;
-  dst[s] = 0;
-  pq.push({0, s});
-
-  while (pq.size()){
-    int cur = pq.top().nod;
-    int wgh = pq.top().wgh;
+  while (!pq.empty())
+  {
+    auto [d, cur] = pq.top();
     pq.pop();
 
-    if (dst[cur] < wgh) continue;
+    if (dist[cur] < d) continue;
 
-    for (auto tmp : edges[cur]){
-      int nxt = tmp.nod;
-      int wgh = tmp.wgh;
-      if (dst[nxt] > dst[cur] + wgh){
-        dst[nxt] = dst[cur] + wgh;
-        pq.push({dst[nxt], nxt});
+    for (auto [d, nxt] : graph[cur])
+    {
+      if (dist[nxt] > dist[cur] + d)
+      {
+        dist[nxt] = dist[cur] + d;
+        pq.push({dist[nxt], nxt});
       }
     }
   }
 
-  if (s == u) {
-    dus = dst[1]; due = dst[N]; duv = dst[v];
+  if (start == u)
+  {
+    duv = dist[v], dsu = dist[1], due = dist[N];
   }
-  else if (s == v){
-    dvs = dst[1], dve = dst[N];
+  else
+  {
+    dsv = dist[1], dve = dist[N];
   }
 }
 
-void solve(){
-  int ans;
+int main()
+{
+  fastio
+
+  cin >> N >> E;
+  int a, b, c;
+  while (E--)
+  {
+    cin >> a >> b >> c;
+    // c *= 2;
+    graph[a].push_back({c, b});
+    graph[b].push_back({c, a});
+  }
+  cin >> u >> v;
+
   dijkstra(u);
   dijkstra(v);
-  ans = min(dus + duv + dve, dvs + duv + due);
-  if (ans >= MAX) ans = -1;
-  cout << ans;
-}
 
-int main(){
-  input();
-  solve();
+  int result = min(dsu + duv + dve, dsv + duv + due);
+
+  result < 222222222 ? cout << result : cout << -1;
+
   return 0;
 }
