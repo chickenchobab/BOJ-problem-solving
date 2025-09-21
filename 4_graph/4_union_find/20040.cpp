@@ -1,51 +1,61 @@
 #include <iostream>
 #include <algorithm>
+#include <vector>
 #define fastio ios::sync_with_stdio(false);cin.tie(0);cout.tie(0);
-
 using namespace std;
 
 int n, m;
+vector<int> parent;
 
-int parent[500005];
-
-void init(){
-    fastio
-    cin >> n >> m;
-    for (int i = 0; i < n; i ++) parent[i] = -1;
+int find(int c)
+{
+  if (parent[c] < 0)
+  {
+    return c;
+  }
+  return parent[c] = find(parent[c]);
 }
 
-int find(int x){
-    if (parent[x] < 0) return x;
-    return parent[x] = find(parent[x]);
-}
+bool unite(int a, int b)
+{
+  a = find(a);
+  b = find(b);
 
-void merge(int a, int b){
-    a = find(a), b = find(b);
+  if (a == b) return false;
 
-    if (parent[a] < parent[b])
-        parent[b] = a;
-    else {
-        if (parent[a] == parent[b])
-            parent[b] --;
-        parent[a] = b;
+  if (parent[a] < parent[b])
+  {
+    parent[b] = a;
+  }
+  else
+  {
+    if (parent[a] == parent[b])
+    {
+      --parent[b];
     }
+    parent[a] = b;
+  }
+
+  return true;
 }
 
-void solve(){
-    int a, b;
-    for (int i = 1; i <= m; i ++){
-        cin >> a >> b;
-        if (find(a) == find(b)) {
-            cout << i;
-            return;
-        }
-        merge(a, b);
-    }   
-    cout << 0;
-}
+int main()
+{
+  fastio
 
-int main(){
-    init();
-    solve();
-    return 0;
+  cin >> n >> m;
+
+  parent.assign(n + 1, -1);
+
+  int answer;
+  int a, b;
+  for (answer = 1; answer <= m; ++answer)
+  {
+    cin >> a >> b;
+    if (!unite(a, b)) break;
+  }
+  
+  answer <= m ? cout << answer : cout << 0;
+
+  return 0;
 }

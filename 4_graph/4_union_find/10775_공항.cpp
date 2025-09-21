@@ -1,43 +1,44 @@
-#include <iostream> 
+#include <iostream>
 #include <algorithm>
 #include <vector>
 #define fastio ios::sync_with_stdio(false);cin.tie(0);cout.tie(0);
-
 using namespace std;
 
 int G, P;
 int parent[100001];
 
-void input(){
+int find(int c)
+{
+  if (parent[c] == c) return c;
+  return parent[c] = find(parent[c]);
+}
+
+int main()
+{
   fastio
+
   cin >> G >> P;
-}
 
-int find(int x){
-  if (parent[x] == x) return x;
-  return parent[x] = find(parent[x]);
-}
-
-void solve(){
-  int dockCnt = 0;
-
-  for (int g = 1; g <= G; ++g)
-    parent[g] = g;
-
-  int gate;
-  for (int p = 1; p <= P; ++p){
-    cin >> gate;
-    gate = find(gate);
-    if (!gate) break;
-    parent[gate] = find(gate - 1);
-    dockCnt++;
+  for (int i = 1; i <= G; ++i)
+  {
+    parent[i] = i;
   }
 
-  cout << dockCnt;
-}
+  int answer = 0;
 
-int main(){
-  input();
-  solve();
+  int gate;
+  for (int i = 1; i <= P; ++i)
+  {
+    cin >> gate;
+
+    gate = find(gate);
+    if (!gate) break;
+
+    parent[gate] = find(gate - 1);
+    ++answer;
+  }
+
+  cout << answer;
+
   return 0;
 }

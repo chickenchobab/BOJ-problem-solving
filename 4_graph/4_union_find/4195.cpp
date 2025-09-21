@@ -1,47 +1,83 @@
 #include <iostream>
+#include <algorithm>
 #include <vector>
 #include <unordered_map>
-
+#define fastio ios::sync_with_stdio(false);cin.tie(0);cout.tie(0);
 using namespace std;
 
-int t, f;
-int set[200001];
+vector<int> parent;
+unordered_map<string, int> names;
 
-int find(int x){
-    if(set[x]<0) return x;
-    return (set[x]=find(set[x]));
+int find(int c)
+{
+  if (parent[c] < 0)
+  {
+    return c;
+  }
+  return parent[c] = find(parent[c]);
 }
 
-void unite(int a,int b){
-    int c1=find(a), c2=find(b);
-    if(set[c1]<set[c2]){
-        set[c1]+=set[c2];
-        set[c2]=c1;
-    }
-    else {
-        set[c2]+=set[c1];
-        set[c1]=c2;
-    }
+int unite(int a, int b)
+{
+  a = find(a);
+  b = find(b);
+
+  if (a == b)
+  {
+    return -parent[a];
+  }
+
+  if (parent[a] < parent[b])
+  {
+    parent[a] += parent[b];
+    parent[b] = a;
+    return -parent[a];
+  }
+  else
+  {
+    parent[b] += parent[a];
+    parent[a] = b;
+    return -parent[b];
+  }
 }
 
-int main(){
-    ios::sync_with_stdio(false);
-    cin.tie(0); cout.tie(0);
-    cin>>t;
-    string n1,n2;
-    while(t--){
-        unordered_map<string, int> name;
-        cin>>f;
-        while(f--){
-            
-            cin>>n1>>n2;
-            name.insert({n1, name.size()+1});
-            name.insert({n2, name.size()+1});
-            
-            if(find(name[n1])!=find(name[n2]))
-                unite(name[n1], name[n2]);
+void reset()
+{
+  names.clear();
+}
 
-            cout<<-set[find(name[n1])]<<'\n';
-        }
+int main()
+{
+  fastio
+
+  int T;
+  cin >> T;
+  int F;
+  while (T--)
+  {
+    reset();
+
+    cin >> F;
+
+    parent.assign(2 * F + 1, -1);
+
+    string a, b;
+    while (F--)
+    {
+      cin >> a >> b;
+
+      if (!names.count(a))
+      {
+        names[a] = names.size() + 1;
+      }
+      if (!names.count(b))
+      {
+        names[b] = names.size() + 1;
+      }
+      
+      cout << unite(names[a], names[b]) << '\n';
     }
+  }
+
+  return 0;
 }
