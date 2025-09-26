@@ -1,40 +1,40 @@
 #include <iostream>
 #include <algorithm>
+#include <vector>
 #include <queue>
-
+#define fastio ios::sync_with_stdio(false);cin.tie(0);cout.tie(0);
 using namespace std;
 
-int n;
-typedef long long ll;
+int N;
+using ll = long long;
 priority_queue<ll, vector<ll>, greater<ll>> pq;
 
-void input(){
-    ios::sync_with_stdio(false);
-    cin.tie(0);
-    cout.tie(0);
-    cin >> n;
-    int tmp;
-    for (int i = 1; i <= n; i ++){
-        cin >> tmp;
-        pq.push(tmp);
-    }
-}
+int main()
+{
+  fastio
 
-int main(){
+  cin >> N;
+  int siz;
+  for (int i = 0; i < N; ++i)
+  {
+    cin >> siz;
+    pq.push(siz);
+  }
 
-    input();
+  long long answer = 0;
 
-    long long sum = 0;
-    long long a, b;
-    while (pq.size() >= 2){
-        a = pq.top(); 
-        pq.pop();
-        b = pq.top();
-        pq.pop();
-        sum += (a + b);
-        if (pq.empty()) break;
-        pq.push(a + b);
-    }
+  while (pq.size() > 1)
+  {
+    ll a = pq.top();
+    pq.pop();
+    ll b = pq.top();
+    pq.pop();
 
-    cout << sum;
+    answer += (a + b);
+    pq.push(a + b);
+  }
+
+  cout << answer;
+
+  return 0;
 }
