@@ -1,40 +1,33 @@
 #include <iostream>
 #include <algorithm>
+#include <vector>
 #define fastio ios::sync_with_stdio(false);cin.tie(0);cout.tie(0);
-
 using namespace std;
 
-int n, m;
-bool fix[44];
+int N, M;
+bool bFixed[41];
+int dp[41];
 
-int dp[44][3];
+int main()
+{
+  fastio
+  
+  cin >> N >> M;
+  int f;
+  while (M--)
+  {
+    cin >> f;
+    bFixed[f] = 1;
+  }
 
-void input(){
-    fastio
-    cin >> n >> m;
-    int num;
-    for (int i = 1; i <= m; i ++){
-        cin >> num;
-        fix[num] = 1;
-    }
-}
+  dp[0] = dp[1] = 1;
 
-void solve(){ 
+  for (int i = 2; i <= N; ++i)
+  {
+    dp[i] = bFixed[i] ? dp[i - 1] : dp[i - 1] + !bFixed[i - 1] * dp[i - 2];
+  }
 
-    dp[0][0] = 1, dp[1][0] = 1;
+  cout << dp[N];
 
-    for (int i = 2; i <= n; i ++){
-        if (!fix[i] && !fix[i - 1]) {
-            dp[i][1] = dp[i - 1][2] = dp[i - 2][0] + dp[i - 2][1];
-        }
-        dp[i][0] = dp[i - 1][0] + dp[i - 1][1];
-    }
-
-    cout << dp[n][0] + dp[n][1];
-}
-
-int main(){
-    input();
-    solve();
-    return 0;
+  return 0;
 }
