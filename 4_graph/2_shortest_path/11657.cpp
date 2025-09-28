@@ -1,62 +1,69 @@
 #include <iostream>
 #include <algorithm>
 #include <vector>
-#include <tuple>
-#define INF 111111111
-
+#define fastio ios::sync_with_stdio(false);cin.tie(0);cout.tie(0);
 using namespace std;
 
-typedef tuple<int, int, int> iii;
-int n, m, a, b, c;
-long long d[555];
-vector<iii> edge;
+int N, M;
+struct edge
+{
+  int a, b, c;
+};
+vector<edge> edges;
+vector<long long> dist;
+#define INF (66666666)
 
-bool bellman_ford(){
+int main()
+{
+  fastio
 
-        d[1] = 0;
+  cin >> N >> M;
+  int a, b, c;
+  while (M--)
+  {
+    cin >> a >> b >> c;
+    edges.push_back({a, b, c});
+  }
 
-		for (int i=1; i<=n-1; i++){       
-            for(iii j : edge){           
-                int a, b, ab;
-                tie(a, b, ab) = {get<0>(j), get<1>(j), get<2>(j)};
-                if(d[a] == INF) continue;
-                if(d[b] > d[a] + ab) d[b] = d[a] + ab;
-            }
-		}
-		for (iii j : edge){
-            int a, b, ab;
-            tie(a, b, ab) = {get<0>(j), get<1>(j), get<2>(j)};
-            if(d[a] == INF) continue;
-			if(d[b] > d[a] + ab) return false;
-		}
-		return true;
-}
+  dist.assign(N + 1, INF);
+  dist[1] = 0;
 
-int main(){
+  for (int i = 0; i < N - 1; ++i)
+  {
+    for (auto [a, b, d] : edges)
+    {
+      if (dist[a] == INF) continue;
 
-    ios::sync_with_stdio(false);
-    cin.tie(0);
-    
-    cin >> n >> m;
-
-    for(int i=1; i<=n; i++) d[i]=INF;
-
-    for(int i=1; i<=m; i++){
-        cin >> a >> b >> c;
-        edge.push_back({a, b, c});
+      if (dist[b] > dist[a] + d)
+      {
+        dist[b] = dist[a] + d;
+      }
     }
-    
-    if(bellman_ford()){
-        for(int i=2; i<=n; i++){
-            if (d[i] != INF) cout << d[i] << '\n';
-            else cout << -1 << '\n';
-        }
-    } 
-    else{
-        cout << -1;
-    }
+  }
 
-    
-    
-    return 0;
+  bool bHasPath = true;
+
+  for (auto [a, b, d] : edges)
+  {
+    if (dist[a] == INF) continue;
+
+    if (dist[b] > dist[a] + d)
+    {
+      bHasPath = false;
+    }
+  }
+
+  if (bHasPath)
+  {
+    for (int i = 2; i <= N; ++i)
+    {
+      cout << (dist[i] != INF ? dist[i] : -1) << '\n';
+    }
+  }
+  else
+  {
+    cout << -1;
+  }
+
+  return 0;
 }

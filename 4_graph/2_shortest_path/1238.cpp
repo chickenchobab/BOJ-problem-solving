@@ -2,67 +2,64 @@
 #include <algorithm>
 #include <vector>
 #include <queue>
-#define INF 100000
-
+#define fastio ios::sync_with_stdio(false);cin.tie(0);cout.tie(0);
 using namespace std;
 
-typedef pair<int, int> p;
-int n, m, x, a, b, t;
-vector<p> e1[1001], e2[1001];
-int d1[1001], d2[1001];
-priority_queue<p, vector<p>, greater<p>> pq;
+int N, M, X;
+using pii = pair<int, int>;
+vector<pii> goingGraph[1001], comingGraph[1001];
+priority_queue<pii, vector<pii>, greater<pii>> pq;
+vector<int> goingDist, comingDist;
 
-int *arr(int num){
-    if (num == 1) return d1;
-    return d2;
-}
-vector<p> *vec(int num){
-    if (num == 1) return e1;
-    return e2;
-}
+void dijstra(int start, vector<pii> graph[], vector<int>& dist)
+{
+  dist.assign(N + 1, 1111111);
 
-void dijkstra(int option){
+  dist[start] = 0;
+  pq.push({dist[start], start});
 
-    int *d = arr(option);
-    vector<p> *e = vec(option);
+  while (!pq.empty())
+  {
+    auto [d, cur] = pq.top();
+    pq.pop();
 
-    for (int i=1; i<=n; i++) d[i] = INF;
-    d[x] = 0;
-    pq.push({0, x});
+    if (dist[cur] < d) continue;
 
-    while(pq.size()){
-        p u = pq.top();
-        pq.pop();
-        if (d[u.second] < u.first) continue;
-        for (p v : e[u.second]){
-            int uv = v.first;
-            if (d[v.second] < d[u.second] + uv) continue;
-            d[v.second] = d[u.second] + uv;
-            pq.push({d[v.second], v.second});
-        }
+    for (auto [d, nxt] : graph[cur])
+    {
+      if (dist[nxt] > dist[cur] + d)
+      {
+        dist[nxt] = dist[cur] + d;
+        pq.push({dist[nxt], nxt});
+      }
     }
+  }
 }
 
-int main(){
+int main()
+{
+  fastio
 
-    ios::sync_with_stdio(false);
-    cin.tie(0);
-    cout.tie(0);
-    
-    cin >> n >> m >> x;
+  cin >> N >> M >> X;
+  int a, b, c;
+  while (M--)
+  {
+    cin >> a >> b >> c;
+    comingGraph[a].push_back({c, b});
+    goingGraph[b].push_back({c, a});
+  }
+  
+  dijstra(X, comingGraph, comingDist);
+  dijstra(X, goingGraph, goingDist);
 
-    for (int i=1; i<=m; i++){
-        cin >> a >> b >> t;
-        e1[a].push_back({t, b});
-        e2[b].push_back({t, a});
-    }
+  int answer = 0;
+  
+  for (int i = 1; i <= N; ++i)
+  {
+    answer = max(answer, goingDist[i] + comingDist[i]);
+  }
 
-    dijkstra(1); dijkstra(2);
+  cout << answer;
 
-    int ans = 0;
-    for (int i=1; i<=n; i++){
-        ans = max(ans, d1[i] + d2[i]);
-    }
-
-    cout << ans;
+  return 0;
 }
