@@ -1,44 +1,50 @@
 #include <iostream>
 #include <algorithm>
+#include <vector>
 #include <queue>
 #define fastio ios::sync_with_stdio(false);cin.tie(0);cout.tie(0);
 using namespace std;
 
-int n;
-priority_queue<int, vector<int>, less<int>> maxq;
-priority_queue<int, vector<int>, greater<int>> minq;
+int N;
+priority_queue<int> l;
+priority_queue<int, vector<int>, greater<int>> r;
 
-void input(){
-    fastio
-    cin >> n;
-}
+int main()
+{
+  fastio
 
-void solve(){
-    int num;
-    while (n --){
-        cin >> num;
-        if (maxq.size() <= minq.size()){
-            if (minq.size() && num > minq.top()){
-                minq.push(num);
-                num = minq.top();
-                minq.pop();
-            }
-            maxq.push(num);
-        }
-        else{
-            if (maxq.size() && num < maxq.top()){
-                maxq.push(num);
-                num = maxq.top();
-                maxq.pop();
-            }
-            minq.push(num);
-        }   
-        cout << maxq.top() << '\n';
+  cin >> N;
+
+  l.push(-10001);
+  r.push(10001);
+
+  int num;
+  while (N--)
+  {
+    cin >> num;
+    
+    if (l.size() == r.size())
+    {
+      if (r.top() < num)
+      {
+        l.push(r.top());
+        r.pop();
+        r.push(num);
+      }
+      else
+      {
+        l.push(num);
+      }
     }
-}
+    else
+    {
+      l.push(num);
+      r.push(l.top());
+      l.pop();
+    }
 
-int main(){
-    input();
-    solve();
-    return 0;
+    cout << l.top() << '\n';
+  }
+
+  return 0;
 }
