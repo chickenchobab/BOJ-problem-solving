@@ -1,40 +1,43 @@
 #include <iostream>
 #include <algorithm>
-// #include <vector>
+#include <vector>
 #include <queue>
 #define fastio ios::sync_with_stdio(false);cin.tie(0);cout.tie(0);
 using namespace std;
 
 int N, K;
-typedef pair<int, int> pii;
-pii J[300000];
-int C[300000];
+using pii = pair<int, int>;
+pii info[300001];
+int C[300001];
+priority_queue<int> pq;
 
 int main()
 {
   fastio
 
   cin >> N >> K;
-  for (int i = 0; i < N; ++i)
+  for (int i = 1; i <= N; ++i)
   {
-    cin >> J[i].first >> J[i].second;
+    cin >> info[i].first >> info[i].second;
   }
-  for (int i = 0; i < K; ++i)
+  for (int i = 1; i <= K; ++i)
   {
     cin >> C[i];
   }
 
-  sort(J, J + N);
-  sort(C, C + K);
+  sort(info + 1, info + N + 1);
+  sort(C + 1, C + K + 1);
 
   long long answer = 0;
-  priority_queue<int> pq;
 
-  for (int i = 0, j = 0; j < K; ++j)
+  int idx = 1;
+
+  for (int i = 1; i <= K; ++i)
   {
-    while (i < N && J[i].first <= C[j])
+    while (idx <= N && info[idx].first <= C[i])
     {
-      pq.push(J[i++].second);
+      pq.push(info[idx].second);
+      ++idx;
     }
 
     if (!pq.empty())
