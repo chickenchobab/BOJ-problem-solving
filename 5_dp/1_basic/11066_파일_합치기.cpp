@@ -1,46 +1,48 @@
 #include <iostream>
 #include <algorithm>
-#define MAX 123456789
+#include <vector>
 #define fastio ios::sync_with_stdio(false);cin.tie(0);cout.tie(0);
-
 using namespace std;
 
-int t;
-int files[505];
-int dp[505][505];
+int K;
+vector<vector<int>> dp;
+int sum[501];
 
-void input(){
-    fastio
-    cin >> t;
-}
+int main()
+{
+  fastio
 
-void solve(){
-    int n;
-    cin >> n;
+  int T;
+  cin >> T;
 
-    int file;
-    for (int i = 1; i <= n; i ++){
-        cin >> file;
-        files[i] = files[i - 1] + file;
+  while (T--)
+  {
+    cin >> K;
+    dp.assign(K + 1, vector<int>(K + 1, 0));
+
+    for (int i = 1; i <= K; ++i)
+    {
+      cin >> sum[i];
+      sum[i] += sum[i - 1];
     }
 
-    for (int l = 2; l <= n; l ++){
-        for (int s = 1; s <= n - (l - 1); s ++){
-            int e = s + l - 1;
-            dp[s][e] = MAX;
-            for (int m = s; m < e; m ++){
-                dp[s][e] = min(dp[s][e], dp[s][m] + dp[m + 1][e] + (files[e] - files[s - 1]));
-            }
+    for (int l = 2; l <= K; ++l)
+    {
+      for (int s = 1; s <= K - l + 1; ++s)
+      {
+        int e = s + l - 1;
+
+        dp[s][e] = 123456789; // 계산
+
+        for (int m = s; m < e; ++m)
+        {
+          dp[s][e] = min(dp[s][e], dp[s][m] + dp[m + 1][e] + sum[e] - sum[s - 1]);
         }
+      }
     }
 
-    cout << dp[1][n] << '\n';
-}
+    cout << dp[1][K] << '\n';
+  }
 
-int main(){
-    input();
-    while (t --){
-        solve();
-    }
-    return 0;
+  return 0;
 }
