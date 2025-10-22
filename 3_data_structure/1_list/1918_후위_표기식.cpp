@@ -1,59 +1,78 @@
 #include <iostream>
 #include <algorithm>
+#include <vector>
 #include <stack>
 #define fastio ios::sync_with_stdio(false);cin.tie(0);cout.tie(0);
 using namespace std;
 
 stack<char> st;
-string str;
+stack<string> results;
 
-void input(){
-    fastio
-    cin >> str;
+int priority(char c)
+{
+  if (c == '+' || c == '-') return 1;
+  if (c == '*' || c == '/') return 2;
+  return 0;
 }
 
-void solve(){
-    char ch;
-    int len = str.length();
+void calculate()
+{
+  if (results.size() < 2) return;
 
-    for(int i = 0; i < len; i ++){
-        ch = str[i];
+  string b = results.top();
+  results.pop();
+  string a = results.top();
+  results.pop();
 
-        if (isalpha(ch)) cout << ch;
-        else if (ch == ')'){
-            while (st.size() && st.top() != '('){
-                cout << st.top();
-                st.pop();
-            }
-            st.pop();
-        }
-        else if (ch == '*' || ch == '/'){
-            while (st.size() && st.top() != '(' && st.top() != '+' && st.top() != '-'){
-                cout << st.top();
-                st.pop();
-            }
-            st.push(ch);
-        }
-        else if (ch == '+' || ch == '-') {
-            while (st.size() && st.top() != '('){
-                cout << st.top();
-                st.pop();
-            }
-            st.push(ch);
-        }
-        else{
-            st.push(ch);
-        }
-    }
-
-    while (st.size()){
-        cout << st.top();
-        st.pop();
-    }
+  results.push(a + b + st.top());
+  st.pop();
 }
 
-int main(){
-    input();
-    solve();
-    return 0;
+int main()
+{
+  fastio
+
+  while (1)
+  {
+    char c = cin.get();
+
+    if (isalpha(c))
+    {
+      results.push(string(1, c));
+    }
+    else if (c == '(')
+    {
+      st.push(c);
+    }
+    else if (c == ')')
+    {
+      while (!st.empty() && st.top() != '(')
+      {
+        calculate();
+      }
+      
+      st.pop(); // pop (
+    }
+    else
+    {
+      while (!st.empty() && priority(st.top()) >= priority(c))
+      {
+        calculate();
+      }
+
+      st.push(c);
+    }
+
+    if (c == '\n')
+    {
+      break;
+    }
+  }
+
+  if (!results.empty())
+  {
+    cout << results.top();
+  }
+
+  return 0;
 }
