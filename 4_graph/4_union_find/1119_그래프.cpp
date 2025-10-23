@@ -1,96 +1,91 @@
 #include <iostream>
 #include <algorithm>
 #include <vector>
-#include <tuple>
 #define fastio ios::sync_with_stdio(false);cin.tie(0);cout.tie(0);
-
 using namespace std;
-// Another solution : dfs
+
 int N;
 vector<pair<int, int>> edges;
-vector<int> parent, numBackedge;
 
-void init(){
-  cin >> N;
-  parent.assign(N + 1, -1);
-  numBackedge.assign(N + 1, 0);
+class DSU
+{
+public:
+  vector<int> parent;
+  int numSet;
 
-  string str;   
-  for (int i = 1; i <= N; ++i){
-    cin >> str;
-    for (int j = i + 1; j <= N; ++j)
-      if (str[j - 1] == 'Y')
-        edges.push_back({i, j});
+  DSU(int n) : parent(n + 1, -1), numSet(n) {}
+
+  int find(int x)
+  {
+    if (parent[x] < 0) return x;
+    return parent[x] = find(parent[x]);
   }
-}
 
-int find(int x){
-  if (parent[x] < 0) return x;
-  return parent[x] = find(parent[x]);
-}
+  bool unite(int a, int b)
+  {
+    a = find(a);
+    b = find(b);
 
-void merge(int a, int b){
-  a = find(a);
-  b = find(b);
+    if (a == b) return false;
+    if (parent[a] > parent[b]) swap(a, b);
+    if (parent[a] == parent[b]) --parent[a];
 
-  if (parent[a] < parent[b]){
-    parent[a] += parent[b];
     parent[b] = a;
-  }
-  else {
-    parent[b] += parent[a];
-    parent[a] = b;
-  }
-}
+    
+    --numSet;
 
-void solve(){
-  int answer = 0;
-  vector<int> roots;
+    return true;
+  }
 
-  for (auto &[a, b] : edges){
-    if (find(a) == find(b)){
-      ++numBackedge[find(a)];
-      continue;
+  bool hasUnconnectedNode()
+  {
+    for (int i = 1; i < parent.size(); ++i)
+    {
+      if (parent[i] == -1) return true;
     }
-    merge(a, b);
+    return false;
   }
+};
 
-  // No need to change
-  if (parent[find(1)] == -N){
-    cout << 0;
-    return;
-  }
-
-  for (int i = 1; i <= N; ++i)
-    if (parent[i] < 0)
-      roots.push_back(i);
-  
-  // Isolated set exists
-  for (int &r : roots){
-    if (parent[r] == -1){
-      cout << -1;
-      return;
-    }
-  }
-
-  for (int i = 0; i < roots.size(); ++i){
-    for (int j = 0; j < roots.size() && numBackedge[roots[i]]; ++j){
-      if (find(roots[i]) == find(roots[j])) continue;
-      // if (parent[find(roots[j])] == -1) continue;
-
-      --numBackedge[roots[i]];
-      merge(roots[i], roots[j]);
-      ++answer;
-    }
-  }
-
-  if (parent[find(1)] == -N) cout << answer;
-  else cout << -1;
-}
-
-int main(){
+int main()
+{
   fastio
-  init();
-  solve();
+  
+  cin >> N;
+  char c;
+  for (int i = 1; i <= N; ++i)
+  {
+    for (int j = 1; j <= N; ++j)
+    {
+      c = cin.get();
+      if (c == '\n') c = cin.get();
+
+      if (c == 'Y' && i < j)
+      {
+        edges.push_back({i, j});
+      }
+    }
+  }
+
+  DSU dsu(N);
+  int numSpareEdges = 0;
+
+  for (auto [a, b] : edges)
+  {
+    if (!dsu.unite(a, b))
+    {
+      ++numSpareEdges;
+    }
+  }
+
+  if (N == 1 || (numSpareEdges >= dsu.numSet - 1 && !dsu.hasUnconnectedNode()))
+  {
+    cout << dsu.numSet - 1;
+  }
+  else
+  {
+    cout << -1;
+  }
+
   return 0;
 }

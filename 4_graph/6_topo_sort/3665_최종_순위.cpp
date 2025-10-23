@@ -5,7 +5,7 @@
 using namespace std;
 
 int n, m;
-int ranking[501];
+int place[501];
 int indeg[501];
 
 int main()
@@ -14,16 +14,15 @@ int main()
 
   int T;
   cin >> T;
-
   while (T--)
   {
     cin >> n;
-    int num;
+    int team;
     for (int i = 1; i <= n; ++i)
     {
-      cin >> num;
-      ranking[num] = i;
-      indeg[num] = i - 1;
+      cin >> team;
+      place[team] = i;
+      indeg[team] = i - 1;
     }
 
     cin >> m;
@@ -31,34 +30,31 @@ int main()
     while (m--)
     {
       cin >> a >> b;
-      if (ranking[a] > ranking[b])
-      {
-        swap(a, b);
-      }
+      if (place[a] > place[b]) swap(a, b);
+
       ++indeg[a];
       --indeg[b];
     }
 
-    vector<int> team(n, 0);
-
     bool bPossible = true;
+    vector<int> indegOwner(n, 0);
 
     for (int i = 1; i <= n; ++i)
     {
-      if (team[indeg[i]])
+      if (indegOwner[indeg[i]])
       {
         bPossible = false;
         break;
       }
 
-      team[indeg[i]] = i;
+      indegOwner[indeg[i]] = i;
     }
 
     if (bPossible)
     {
-      for (int i = 0; i < n; ++i)
+      for (int team : indegOwner)
       {
-        cout << team[i] << ' ';
+        cout << team << ' ';
       }
     }
     else
